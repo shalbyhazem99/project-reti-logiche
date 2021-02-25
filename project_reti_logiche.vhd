@@ -25,8 +25,7 @@ END project_reti_logiche;
 
 ARCHITECTURE Behavioral OF project_reti_logiche IS
 	TYPE stato IS (WAIT_RESET, WAIT_START, WAIT_MEMORY, 
-	READ_COLUMN_REQ, READ_COLUMN, 
-	READ_ROW_REQ, READ_ROW, 
+	READ_COLUMN_REQ, READ_COLUMN_AND_ROW_REQ, READ_ROW, 
 	READ_DATA_REQ, READ_DATA, 
 	START_ELABORATING, END_ELABORATING, 
 	READ_DATA_REQ_PHASE2, READ_DATA_PHASE2
@@ -37,42 +36,33 @@ ARCHITECTURE Behavioral OF project_reti_logiche IS
 	SIGNAL max, min                                   : std_logic_vector(7 DOWNTO 0);
 BEGIN
 	PROCESS (i_clk, i_rst)
+	VARIABLE temp_integer : INTEGER;
 	BEGIN
 		IF i_rst = '1' THEN
-			current_state <= WAIT_START;
+			next_state <= WAIT_START;
 		ELSIF rising_edge(i_clk) THEN
-			current_state <= next_state;
-		END IF;
-	END PROCESS;
-
-	PROCESS (current_state, i_start)
-	VARIABLE temp_integer : INTEGER;
-	VARIABLE temp_pixel   : std_logic_vector(7 DOWNTO 0);
-		BEGIN
-			CASE current_state IS
+			CASE next_state IS
 				WHEN WAIT_START => 
-					o_done <= '0';
 					IF i_start = '1' THEN
 						max        <= (OTHERS => '0');
 						min        <= (OTHERS => '1');
 						count      <= 0;
 						next_state <= READ_COLUMN_REQ;
 					ELSE
+					   o_done<='0';
 						next_state <= WAIT_START;
 					END IF;
 
 				WHEN WAIT_MEMORY => 
 					next_state <= wait_next_state;
 				WHEN READ_COLUMN_REQ => 
-					o_en            <= '1';
-					o_we            <= '0';
+				    o_en            <= '1';
+                    o_we            <= '0';
 					o_address       <= (OTHERS => '0');
-					wait_next_state <= READ_COLUMN;
+					wait_next_state <= READ_COLUMN_AND_ROW_REQ;
 					next_state      <= WAIT_MEMORY;
-				WHEN READ_COLUMN => 
-					byte_to_read <= TO_INTEGER(unsigned (i_data));
-					next_state   <= READ_row_req;
-				WHEN READ_ROW_REQ => 
+				WHEN READ_COLUMN_AND_ROW_REQ => 
+					byte_to_read    <= TO_INTEGER(unsigned (i_data));
 					o_en            <= '1';
 					o_we            <= '0';
 					o_address       <= (0 => '1', OTHERS => '0');
@@ -145,24 +135,27 @@ BEGIN
 						temp_integer := (to_integer(unsigned(i_data) - unsigned(min)) * 2 * shift_level);
 						IF temp_integer > 255 THEN
 							o_data <= (OTHERS => '1');
-						ELSE 
+						ELSE
 							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
 						END IF;
- 
+
 						--INCREMENTO COUNT
 						temp_integer := count;
 						count      <= temp_integer + 1;
- 
+
 						next_state <= READ_DATA_REQ_PHASE2;
 					ELSE
-						next_state <= END_ELABORATING;
+						next_state<= END_ELABORATING;
 					END IF;
- 
-				WHEN END_ELABORATING => 
-					o_done     <= '1';
-					next_state <= WAIT_START;
+					WHEN END_ELABORATING =>
+					   o_done<='1';
+					   next_state <= WAIT_START;
 
 				WHEN OTHERS => 
-			END CASE;
-		END PROCESS;
+			END CASE; 
+		END IF;
+	END PROCESS;
+ 
+ 
+ 
 END Behavioral;
