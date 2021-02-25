@@ -32,10 +32,6 @@ ARCHITECTURE Behavioral OF project_reti_logiche IS
 	READ_DATA_REQ_PHASE2, READ_DATA_PHASE2
 	);
 
-	CONSTANT column_address                           : std_logic_vector(15 DOWNTO 0) := (OTHERS => '0');
-	CONSTANT row_address                              : std_logic_vector(15 DOWNTO 0) := (0 => '1', OTHERS => '0'); --
-	CONSTANT all_one                                  : std_logic_vector(7 DOWNTO 0) := (OTHERS => '1'); --255
-
 	SIGNAL next_state, current_state, wait_next_state : stato;
 	SIGNAL byte_to_read, count, shift_level           : INTEGER;
 	SIGNAL max, min                                   : std_logic_vector(7 DOWNTO 0);
@@ -70,7 +66,7 @@ BEGIN
 				WHEN READ_COLUMN_REQ => 
 					o_en            <= '1';
 					o_we            <= '0';
-					o_address       <= column_address;
+					o_address       <= (OTHERS => '0');
 					wait_next_state <= READ_COLUMN;
 					next_state      <= WAIT_MEMORY;
 				WHEN READ_COLUMN => 
@@ -79,7 +75,7 @@ BEGIN
 				WHEN READ_ROW_REQ => 
 					o_en            <= '1';
 					o_we            <= '0';
-					o_address       <= row_address;
+					o_address       <= (0 => '1', OTHERS => '0');
 					wait_next_state <= READ_ROW;
 					next_state      <= WAIT_MEMORY;
 				WHEN READ_ROW => 
@@ -148,7 +144,7 @@ BEGIN
 						--calcolo dato da scrivere
 						temp_integer := (to_integer(unsigned(i_data) - unsigned(min)) * 2 * shift_level);
 						IF temp_integer > 255 THEN
-							o_data <= all_one;
+							o_data <= (OTHERS => '1');
 						ELSE 
 							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
 						END IF;
