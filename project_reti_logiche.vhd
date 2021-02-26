@@ -1,8 +1,8 @@
 ----------------------------------------------------------------------------------
--- PROGETTO DI RETI LOGICHE
+-- PROGETTO DI RETI LOGICHE by PROF. GIANLUCA PALERMO
 --
 -- SHALBY HAZEM HESHAM YOUSEF (10596243)
--- PEREGO
+-- PEREGO NICCOLO'            (10628782)
 ----------------------------------------------------------------------------------
 
 LIBRARY IEEE;
@@ -143,8 +143,12 @@ BEGIN
 						next_state <= END_ELABORATING;
 					END IF;
 				WHEN END_ELABORATING => 
-					o_done     <= '1';
-					next_state <= WAIT_START;
+					o_done <= '1';
+					IF (i_start = '0') THEN
+						next_state <= WAIT_START;
+					ELSE
+						next_state <= END_ELABORATING;
+					END IF;
 				WHEN OTHERS => 
 			END CASE;
 		END IF;
