@@ -4,7 +4,6 @@
 -- SHALBY HAZEM HESHAM YOUSEF (10596243)
 -- PEREGO NICCOLO'            (10628782)
 ----------------------------------------------------------------------------------
-
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
@@ -137,7 +136,6 @@ BEGIN
 						--INCREMENTO COUNT
 						temp_integer := count;
 						count      <= temp_integer + 1;
-
 						next_state <= READ_DATA_REQ_PHASE2;
 					ELSE
 						next_state <= END_ELABORATING;
