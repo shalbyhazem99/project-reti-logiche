@@ -30,7 +30,6 @@ ARCHITECTURE Behavioral OF project_reti_logiche IS
 	START_ELABORATING, END_ELABORATING, 
 	READ_DATA_REQ_PHASE2, READ_DATA_PHASE2
 	);
-
 	SIGNAL next_state, current_state, wait_next_state : stato;
 	SIGNAL byte_to_read, count, shift_level           : INTEGER;
 	SIGNAL max, min                                   : std_logic_vector(7 DOWNTO 0);
@@ -49,15 +48,14 @@ BEGIN
 						count      <= 0;
 						next_state <= READ_COLUMN_REQ;
 					ELSE
-					   o_done<='0';
+						o_done     <= '0';
 						next_state <= WAIT_START;
 					END IF;
-
 				WHEN WAIT_MEMORY => 
 					next_state <= wait_next_state;
 				WHEN READ_COLUMN_REQ => 
-				    o_en            <= '1';
-                    o_we            <= '0';
+					o_en            <= '1';
+					o_we            <= '0';
 					o_address       <= (OTHERS => '0');
 					wait_next_state <= READ_COLUMN_AND_ROW_REQ;
 					next_state      <= WAIT_MEMORY;
@@ -79,7 +77,6 @@ BEGIN
 					o_address       <= std_logic_vector(to_unsigned(count + 2, 16)); --conversione su 16 bit
 					wait_next_state <= READ_DATA;
 					next_state      <= WAIT_MEMORY;
-
 				WHEN READ_DATA => 
 					IF i_data < min THEN
 						min <= i_data;
@@ -94,7 +91,6 @@ BEGIN
 					ELSE
 						count      <= 0;
 						next_state <= START_ELABORATING;
-
 					END IF;
 				WHEN START_ELABORATING => 
 					--calcolo delta value e shif level
@@ -132,30 +128,25 @@ BEGIN
 						o_we      <= '1';
 						o_address <= std_logic_vector(to_unsigned(count + byte_to_read + 2, 16)); --conversione su 16 bit
 						--calcolo dato da scrivere
-						temp_integer := (to_integer(unsigned(i_data) - unsigned(min)) * 2 ** shift_level);
+						temp_integer := (to_integer(unsigned(i_data) - unsigned(min))) * 2 ** shift_level;
 						IF temp_integer > 255 THEN
 							o_data <= (OTHERS => '1');
 						ELSE
 							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
 						END IF;
-
 						--INCREMENTO COUNT
 						temp_integer := count;
 						count      <= temp_integer + 1;
 
 						next_state <= READ_DATA_REQ_PHASE2;
 					ELSE
-						next_state<= END_ELABORATING;
+						next_state <= END_ELABORATING;
 					END IF;
-					WHEN END_ELABORATING =>
-					   o_done<='1';
-					   next_state <= WAIT_START;
-
+				WHEN END_ELABORATING => 
+					o_done     <= '1';
+					next_state <= WAIT_START;
 				WHEN OTHERS => 
-			END CASE; 
+			END CASE;
 		END IF;
 	END PROCESS;
- 
- 
- 
 END Behavioral;
