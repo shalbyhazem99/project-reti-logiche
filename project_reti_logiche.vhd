@@ -11,8 +11,8 @@ ENTITY project_reti_logiche IS
 	PORT 
 	(
 		i_clk     : IN std_logic;
-		i_rst     : IN std_logic; --viene sempre dato prima della prima elaborazione
-		i_start   : IN std_logic; --da inizio all'elaborazione e rimane alto fino a che done non viene portato alto
+		i_rst     : IN std_logic; --viene sempre dato prima della prima elaborazione o durante il processo
+		i_start   : IN std_logic; --dà inizio all'elaborazione e rimane alto fino a che done non viene portato alto
 		i_data    : IN std_logic_vector(7 DOWNTO 0);
 		o_address : OUT std_logic_vector(15 DOWNTO 0);
 		o_done    : OUT std_logic; --portato alto quando si finisce l'elaborazione
@@ -23,11 +23,10 @@ ENTITY project_reti_logiche IS
 END project_reti_logiche;
 
 ARCHITECTURE Behavioral OF project_reti_logiche IS
-	TYPE stato IS (WAIT_RESET, WAIT_START, WAIT_MEMORY, 
-	READ_COLUMN_REQ, READ_COLUMN_AND_ROW_REQ, READ_ROW, 
-	READ_DATA_REQ, READ_DATA, 
-	START_ELABORATING, END_ELABORATING, 
-	READ_DATA_REQ_PHASE2, READ_DATA_PHASE2
+	TYPE stato IS (WAIT_RESET, WAIT_START, WAIT_MEM, 
+	COL_READ_REQ, COL_ROW_READ_READ_REQ, ROW_READ, 
+	SFM_READ_REQ, SFM_READ, PREP_ELAB_VALUES, 
+	DONE, SFE_READ_REQ, SFE_READ
 	);
 	SIGNAL next_state, current_state, wait_next_state : stato;
 	SIGNAL byte_to_read, count, shift_level           : INTEGER;
@@ -45,53 +44,55 @@ BEGIN
 						max        <= (OTHERS => '0');
 						min        <= (OTHERS => '1');
 						count      <= 0;
-						next_state <= READ_COLUMN_REQ;
+						next_state <= COL_READ_REQ;
 					ELSE
 						o_done     <= '0';
 						next_state <= WAIT_START;
 					END IF;
-				WHEN WAIT_MEMORY => 
+				WHEN WAIT_MEM => 
 					next_state <= wait_next_state;
-				WHEN READ_COLUMN_REQ => 
+				--gruppo stati calcolo dimensioni 
+				WHEN COL_READ_REQ => 
 					o_en            <= '1';
 					o_we            <= '0';
 					o_address       <= (OTHERS => '0');
-					wait_next_state <= READ_COLUMN_AND_ROW_REQ;
-					next_state      <= WAIT_MEMORY;
-				WHEN READ_COLUMN_AND_ROW_REQ => 
+					wait_next_state <= COL_ROW_READ_READ_REQ;
+					next_state      <= WAIT_MEM;
+				WHEN COL_ROW_READ_READ_REQ => 
 					byte_to_read    <= TO_INTEGER(unsigned (i_data));
 					o_en            <= '1';
 					o_we            <= '0';
 					o_address       <= (0 => '1', OTHERS => '0');
-					wait_next_state <= READ_ROW;
-					next_state      <= WAIT_MEMORY;
-				WHEN READ_ROW => 
+					wait_next_state <= ROW_READ;
+					next_state      <= WAIT_MEM;
+				WHEN ROW_READ => 
 					temp_integer := byte_to_read * TO_INTEGER(unsigned (i_data));
 					byte_to_read <= temp_integer;
-					next_state   <= READ_DATA_REQ;
-					-- calcolo massimo e minimo
-				WHEN READ_DATA_REQ => 
+					next_state   <= SFM_READ_REQ;
+				-- gruppo stati calcolo valori massimo e minimo
+				WHEN SFM_READ_REQ => 
 					o_en            <= '1';
 					o_we            <= '0';
 					o_address       <= std_logic_vector(to_unsigned(count + 2, 16)); --conversione su 16 bit
-					wait_next_state <= READ_DATA;
-					next_state      <= WAIT_MEMORY;
-				WHEN READ_DATA => 
+					wait_next_state <= SFM_READ;
+					next_state      <= WAIT_MEM;
+				WHEN SFM_READ => 
 					IF i_data < min THEN
 						min <= i_data;
 					END IF;
 					IF i_data > max THEN
 						max <= i_data;
 					END IF;
-					IF count < byte_to_read - 1 THEN --INCREMENTO COUNT
+					IF count < byte_to_read - 1 THEN --incremento count
 						temp_integer := count;
 						count      <= temp_integer + 1;
-						next_state <= READ_DATA_REQ;
+						next_state <= SFM_READ_REQ;
 					ELSE
 						count      <= 0;
-						next_state <= START_ELABORATING;
+						next_state <= PREP_ELAB_VALUES;
 					END IF;
-				WHEN START_ELABORATING => 
+				--gruppo stati elaborazione effettiva
+				WHEN PREP_ELAB_VALUES => 
 					--calcolo delta value e shif level
 					temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); --delta_value
 					IF temp_integer = 0 THEN
@@ -113,39 +114,39 @@ BEGIN
 					ELSE
 						shift_level <= 0;
 					END IF;
-					next_state <= READ_DATA_REQ_PHASE2;
-				WHEN READ_DATA_REQ_PHASE2 => 
+					next_state <= SFE_READ_REQ;
+				WHEN SFE_READ_REQ => 
 					o_en            <= '1';
 					o_we            <= '0';
 					o_address       <= std_logic_vector(to_unsigned(count + 2, 16)); --conversione su 16 bit
-					wait_next_state <= READ_DATA_PHASE2;
-					next_state      <= WAIT_MEMORY;
-				WHEN READ_DATA_PHASE2 => 
+					wait_next_state <= SFE_READ;
+					next_state      <= WAIT_MEM;
+				WHEN SFE_READ => 
 					IF count < byte_to_read THEN
-						--elaborare il byte letto e scriverlo
+						--elaborare il byte letto e scriverlo, enable memoria in write
 						o_en      <= '1';
 						o_we      <= '1';
 						o_address <= std_logic_vector(to_unsigned(count + byte_to_read + 2, 16)); --conversione su 16 bit
-						--calcolo dato da scrivere
+						--calcolo new_value del pixel corrente da scrivere
 						temp_integer := (to_integer(unsigned(i_data) - unsigned(min))) * 2 ** shift_level;
 						IF temp_integer > 255 THEN
 							o_data <= (OTHERS => '1');
 						ELSE
 							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
 						END IF;
-						--INCREMENTO COUNT
+						--incremento count
 						temp_integer := count;
 						count      <= temp_integer + 1;
-						next_state <= READ_DATA_REQ_PHASE2;
+						next_state <= SFE_READ_REQ;
 					ELSE
-						next_state <= END_ELABORATING;
+						next_state <= DONE;
 					END IF;
-				WHEN END_ELABORATING => 
+				WHEN DONE => 
 					o_done <= '1';
 					IF (i_start = '0') THEN
 						next_state <= WAIT_START;
 					ELSE
-						next_state <= END_ELABORATING;
+						next_state <= DONE;
 					END IF;
 				WHEN OTHERS => 
 			END CASE;
