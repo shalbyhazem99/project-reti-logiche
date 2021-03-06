@@ -24,9 +24,8 @@ END project_reti_logiche;
 
 ARCHITECTURE Behavioral OF project_reti_logiche IS
 	TYPE stato IS (WAIT_RESET, WAIT_START, WAIT_MEM, 
-	COL_READ_REQ, COL_ROW_READ_READ_REQ, ROW_READ, 
-	SFM_READ_REQ, SFM_READ, PREP_ELAB_VALUES, 
-	DONE, SFE_READ_REQ, SFE_READ
+	 PREP_ELAB_VALUES, DONE,	
+	READ_REQ, READ_ROW, READ_COLUMN, COMPARE_DATA, ELABORATE_DATA
 	);
 	SIGNAL next_state, current_state, wait_next_state : stato;
 	SIGNAL byte_to_read, count, shift_level           : INTEGER;
@@ -44,51 +43,49 @@ BEGIN
 						max        <= (OTHERS => '0');
 						min        <= (OTHERS => '1');
 						count      <= 0;
-						next_state <= COL_READ_REQ;
+						shift_level <= 9;
+						next_state <= READ_REQ;
 					ELSE
 						o_done     <= '0';
 						next_state <= WAIT_START;
 					END IF;
+				WHEN  READ_REQ =>
+				    o_en            <= '1';
+                    o_we            <= '0';
+                    o_address       <= std_logic_vector(to_unsigned(count,16));
+                    next_state      <= WAIT_MEM;
 				WHEN WAIT_MEM => 
-					next_state <= wait_next_state;
-				--gruppo stati calcolo dimensioni 
-				WHEN COL_READ_REQ => 
-					o_en            <= '1';
-					o_we            <= '0';
-					o_address       <= (OTHERS => '0');
-					wait_next_state <= COL_ROW_READ_READ_REQ;
-					next_state      <= WAIT_MEM;
-				WHEN COL_ROW_READ_READ_REQ => 
+				    IF count=0 then 
+				        next_state <= READ_COLUMN;
+				    ELSIF count=1 then 
+                        next_state <= READ_ROW;
+				    ELSIF shift_level < 9 then 
+				        next_state <= ELABORATE_DATA;
+				    ELSE 
+				        next_state <= COMPARE_DATA;
+				    END IF;
+				    --INCREMENTO DI COUNT
+                    temp_integer := count;
+                    count      <= temp_integer + 1;
+				WHEN READ_COLUMN => 
 					byte_to_read    <= TO_INTEGER(unsigned (i_data));
-					o_en            <= '1';
-					o_we            <= '0';
-					o_address       <= (0 => '1', OTHERS => '0');
-					wait_next_state <= ROW_READ;
-					next_state      <= WAIT_MEM;
-				WHEN ROW_READ => 
+					next_state      <= READ_REQ;
+				WHEN READ_ROW => 
 					temp_integer := byte_to_read * TO_INTEGER(unsigned (i_data));
 					byte_to_read <= temp_integer;
-					next_state   <= SFM_READ_REQ;
-				-- gruppo stati calcolo valori massimo e minimo
-				WHEN SFM_READ_REQ => 
-					o_en            <= '1';
-					o_we            <= '0';
-					o_address       <= std_logic_vector(to_unsigned(count + 2, 16)); --conversione su 16 bit
-					wait_next_state <= SFM_READ;
-					next_state      <= WAIT_MEM;
-				WHEN SFM_READ => 
+					next_state   <= READ_REQ;
+				WHEN COMPARE_DATA => 
+					IF count <= byte_to_read+2 THEN
 					IF i_data < min THEN
 						min <= i_data;
 					END IF;
 					IF i_data > max THEN
 						max <= i_data;
 					END IF;
-					IF count < byte_to_read - 1 THEN --incremento count
-						temp_integer := count;
-						count      <= temp_integer + 1;
-						next_state <= SFM_READ_REQ;
+					 --incremento count
+						next_state <= READ_REQ;
 					ELSE
-						count      <= 0;
+						count      <= 2;
 						next_state <= PREP_ELAB_VALUES;
 					END IF;
 				--gruppo stati elaborazione effettiva
@@ -114,19 +111,13 @@ BEGIN
 					ELSE
 						shift_level <= 0;
 					END IF;
-					next_state <= SFE_READ_REQ;
-				WHEN SFE_READ_REQ => 
-					o_en            <= '1';
-					o_we            <= '0';
-					o_address       <= std_logic_vector(to_unsigned(count + 2, 16)); --conversione su 16 bit
-					wait_next_state <= SFE_READ;
-					next_state      <= WAIT_MEM;
-				WHEN SFE_READ => 
-					IF count < byte_to_read THEN
+					next_state <= READ_REQ;
+				WHEN elaborate_data => 
+					IF count <= byte_to_read+2 THEN
 						--elaborare il byte letto e scriverlo, enable memoria in write
 						o_en      <= '1';
 						o_we      <= '1';
-						o_address <= std_logic_vector(to_unsigned(count + byte_to_read + 2, 16)); --conversione su 16 bit
+						o_address <= std_logic_vector(to_unsigned(count + byte_to_read-1, 16)); --conversione su 16 bit
 						--calcolo new_value del pixel corrente da scrivere
 						temp_integer := (to_integer(unsigned(i_data) - unsigned(min))) * 2 ** shift_level;
 						IF temp_integer > 255 THEN
@@ -134,10 +125,7 @@ BEGIN
 						ELSE
 							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
 						END IF;
-						--incremento count
-						temp_integer := count;
-						count      <= temp_integer + 1;
-						next_state <= SFE_READ_REQ;
+						next_state <= READ_REQ;
 					ELSE
 						next_state <= DONE;
 					END IF;
