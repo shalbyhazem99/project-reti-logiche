@@ -8,6 +8,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 ENTITY project_reti_logiche IS
+	PORT
 	(
 		i_clk     : IN std_logic;
 		i_rst     : IN std_logic; --viene sempre dato prima della prima elaborazione o durante il processo
@@ -54,10 +55,12 @@ BEGIN
 						next_state <= READ_COLUMN;
 					ELSIF count = 1 THEN
 						next_state <= READ_ROW;
-					ELSIF shift_level < 9 THEN
-						next_state <= ELABORATE_DATA;
 					ELSE
-						next_state <= COMPARE_DATA;
+					   IF shift_level > 8 THEN
+					       next_state <= COMPARE_DATA;
+					   ELSE
+					       next_state <= ELABORATE_DATA;
+					   END IF;
 					END IF;
 					--INCREMENTO DI COUNT
 					temp_integer := count;
