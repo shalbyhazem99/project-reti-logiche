@@ -12,7 +12,7 @@ ENTITY project_reti_logiche IS
 	(
 		i_clk     : IN std_logic;
 		i_rst     : IN std_logic; --viene sempre dato prima della prima elaborazione o durante il processo
-		i_start   : IN std_logic; --da  inizio all'elaborazione e rimane alto fino a che done non viene portato alto
+		i_start   : IN std_logic; --da inizio all'elaborazione e rimane alto fino a che done non viene portato alto
 		i_data    : IN std_logic_vector(7 DOWNTO 0);
 		o_address : OUT std_logic_vector(15 DOWNTO 0);
 		o_done    : OUT std_logic; --portato alto quando si finisce l'elaborazione
@@ -56,11 +56,11 @@ BEGIN
 					ELSIF count = 1 THEN
 						next_state <= READ_ROW;
 					ELSE
-					   IF shift_level > 8 THEN
-					       next_state <= COMPARE_DATA;
-					   ELSE
-					       next_state <= ELABORATE_DATA;
-					   END IF;
+						IF shift_level > 8 THEN
+							next_state <= COMPARE_DATA;
+						ELSE
+							next_state <= ELABORATE_DATA;
+						END IF;
 					END IF;
 					--INCREMENTO DI COUNT
 					temp_integer := count;
@@ -114,7 +114,7 @@ BEGIN
 						shift_level <= 0;
 					END IF;
 					next_state <= READ_REQ;
-				WHEN elaborate_data =>
+				WHEN ELABORATE_DATA =>
 					IF count <= byte_to_read + 2 THEN
 						--elaborare il byte letto e scriverlo, enable memoria in write
 						o_en      <= '1';
