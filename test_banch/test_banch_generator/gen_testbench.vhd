@@ -62,7 +62,7 @@ begin
   end process p_CLK_GEN;
 
   MEM : process (tb_clk)
-    file read_file     : text open read_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch_potente\ram_content.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
+    file read_file     : text open read_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch\test_banch_generator\ram_content.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
     variable read_line : line;
     variable R         : ram_type;
     variable handler   : integer;
@@ -97,8 +97,8 @@ begin
   end process;
 
   test : process is
-    file write_file                     : text open write_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch_potente\passati.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
-    file err_write_file                 : text open write_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch_potente\non_passati.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
+    file write_file                     : text open write_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch\test_banch_generator\passati.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
+    file err_write_file                 : text open write_mode is "D:\Users\Desktop\vivado_project\project-reti-logiche\test_banch\test_banch_generator\non_passati.txt"; --<<<<<<<<<<<<<<<<--------------------------------- QUI DA CAMBIARE
     variable write_line, err_write_line : line;
     variable count                      : integer := 0;
     variable passed                     : boolean := true;
@@ -156,7 +156,7 @@ begin
 
     file_close(write_file);
     file_close(err_write_file);
-    std.env.finish;
+   -- std.env.finish;
 
   end process test;
 
