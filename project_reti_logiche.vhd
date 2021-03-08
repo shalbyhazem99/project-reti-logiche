@@ -18,11 +18,11 @@ ENTITY project_reti_logiche IS
 		o_done    : OUT std_logic; --portato alto quando si finisce l'elaborazione
 		o_en      : OUT std_logic; --memory enable
 		o_we      : OUT std_logic; --write enable
-		o_data    : OUT std_logic_vector (7 DOWNTO 0) --eventuale segnale da scrivere in memoria all'indirizzo o-address
+		o_data    : OUT std_logic_vector (7 DOWNTO 0) --eventuale segnale da scrivere in memoria all'indirizzo o_address
 	);
 END project_reti_logiche;
 ARCHITECTURE Behavioral OF project_reti_logiche IS
-	TYPE stato IS (WT_RST, WT_STR, WAIT_MEM, RD_REQ, RD_ROW, RD_COL, CMP_DATA, PREP_ELAB, ELAB_DATA, DONE);
+	TYPE stato IS (WT_RST, WT_STR, WAIT_MEM, RD_REQ, RD_ROW, RD_COL, CMP_DATA, PREP_EL, EL_DATA, DONE);
 	SIGNAL next_state                       : stato;
 	SIGNAL byte_to_read, count, shift_level : INTEGER;
 	SIGNAL max, min                         : std_logic_vector(7 DOWNTO 0);
@@ -37,23 +37,23 @@ BEGIN
 			next_state <= WT_STR;
 		ELSIF rising_edge(i_clk) THEN
 			CASE next_state IS
-				WHEN WT_STR =>
+				WHEN WT_STR => --wait start
 					o_done <= '0';
 					IF i_start = '1' THEN
 						max         <= (OTHERS => '0');
 						min         <= (OTHERS => '1');
 						count       <= 0;
-						shift_level <= 3; --va bene qualsiasi valore che non può essere assunto da shift_level
+						shift_level <= 3; --valore di controllo quasiasi (tra i non assumibili da shift_level)
 						next_state  <= RD_REQ;
 					ELSE
 						next_state <= WT_STR;
 					END IF;
-				WHEN RD_REQ =>
+				WHEN RD_REQ => --read request
 					o_en       <= '1';
 					o_we       <= '0';
 					o_address  <= std_logic_vector(to_unsigned(count, 16));
 					next_state <= WAIT_MEM;
-				WHEN WAIT_MEM =>
+				WHEN WAIT_MEM => -- wait memory
 					IF count = 0 THEN
 						next_state <= RD_COL;
 					ELSIF count = 1 THEN
@@ -62,15 +62,16 @@ BEGIN
 						IF shift_level = 3 THEN
 							next_state <= CMP_DATA;
 						ELSE
-							next_state <= ELAB_DATA;
+							next_state <= EL_DATA;
 						END IF;
 					END IF;
 					temp_integer := count + 1; --INCREMENTO DI COUNT
 					count <= temp_integer;
-				WHEN RD_COL =>
+				--gruppo stati: calcolo dimensioni
+				WHEN RD_COL => --read column
 					byte_to_read <= TO_INTEGER(unsigned (i_data));
 					next_state   <= RD_REQ;
-				WHEN RD_ROW =>
+				WHEN RD_ROW => --read row
 					temp_integer := byte_to_read * TO_INTEGER(unsigned (i_data));
 					byte_to_read <= temp_integer;
 					IF temp_integer > 0 THEN
@@ -78,7 +79,8 @@ BEGIN
 					ELSE
 						next_state <= DONE;
 					END IF;
-				WHEN CMP_DATA =>
+				--gruppo stati: ricerca di massimo e minimo
+				WHEN CMP_DATA => --compare data
 					IF count <= byte_to_read + 2 THEN
 						IF i_data < min THEN
 							min <= i_data;
@@ -89,11 +91,11 @@ BEGIN
 						next_state <= RD_REQ;
 					ELSE
 						count      <= 2;
-						next_state <= PREP_ELAB;
+						next_state <= PREP_EL;
 					END IF;
-					--gruppo stati elaborazione effettiva
-				WHEN PREP_ELAB =>
-					--calcolo delta value e shif level
+				--gruppo stati: elaborazione 
+				WHEN PREP_EL => --prepare elaboration
+					--calcolo delta value e shift level
 					temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); --delta_value
 					IF temp_integer = 0 THEN
 						shift_level <= 256;
@@ -115,7 +117,7 @@ BEGIN
 						shift_level <= 1;
 					END IF;
 					next_state <= RD_REQ;
-				WHEN ELAB_DATA =>
+				WHEN EL_DATA => --elaborate data
 					IF count <= byte_to_read + 2 THEN
 						--elaborare il byte letto e scriverlo, enable memoria in write
 						o_en      <= '1';
