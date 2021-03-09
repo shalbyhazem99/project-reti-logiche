@@ -104,20 +104,32 @@
         \node[state, left of=7]         (9) {\texttt{DONE}};
 
         \draw   (0) edge                    node {\texttt{i\_rst=1}}                                            (1)
+                
+                (1) edge[loop left]                    node {}                                                  (1)
                 (1) edge                    node [yshift=15pt, xshift=-38pt]{\texttt{i\_start=1}}               (5)
+                
                 (2) edge                    node {}                                                             (5)
-                (3) edge                    node [xshift=-10pt] {\texttt{\emph{cond4}}}                         (5)
-                (3) edge[bend right,left]   node {\texttt{\emph{!cond4}}}                                       (9)
+                
+                (3) edge                    node [xshift=-10pt] {\texttt{\emph{cond5}}}                         (5)
+                (3) edge[left]   node [yshift=40pt, xshift=20pt]{\texttt{\emph{!cond5}}}                        (9)
+                
+                (4) edge                    node [at start, yshift=8pt, xshift=25pt] {\texttt{\emph{cond6}}}    (5)
                 (4) edge                    node[left] {\texttt{\emph{!cond6}}}                                 (7)
-                (4) edge                    node [at start, yshift=7pt, xshift=25pt] {\texttt{\emph{cond6}}}    (5)
+                
                 (5) edge                    node {}                                                             (6)
-                (6) edge[bend right, right] node {\texttt{\emph{cond2}}}                                        (2)
-                (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond3}}}               (3)
-                (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond5}}}               (4)
-                (6) edge[left]              node {\texttt{\emph{cond7}}}                                        (8)
+                
+                (6) edge[bend right, right] node {\texttt{\emph{cond1}}}                                        (2)
+                (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond2}}}               (3)
+                (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond3}}}               (4)
+                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)
+                
                 (7) edge                    node {}                                                             (5)
+                
                 (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
-                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9);
+                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
+                
+                (9) edge[bend left]                    node {\texttt{i\_start=0}}                               (1)
+                (9) edge[loop left]                    node {}                                                  (9);
 
     \end{tikzpicture}
     \caption{Diagramma degli stati della macchina a stati finiti utilizzata}
@@ -126,19 +138,39 @@
 
 Le condizioni utilizzate nel processo sono le seguenti:
 
+%\begin{center}
+%    \begin{tabular}{ll}
+%    \texttt{cond1}: & \texttt{dimImmagine $>$ 0}\\
+%    \texttt{cond2}: & \texttt{count $=$ 0} \\
+%    \texttt{cond3}: & \texttt{count $=$ 1} \\
+%    \texttt{cond4}: & \texttt{dimImmagine $>$ 0} \\
+%    \texttt{cond5}: & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
+%    \texttt{cond6}: & \texttt{count $\leq$ dimImmagine $+$ 2} \\
+%    \texttt{cond7}: & \texttt{!cond1 \&\& !cond2 \&\& !cont5} \\    
+%    \end{tabular}
+%\end{center}
+
 \begin{center}
-    \begin{tabular}{ll}
-    \texttt{cond1}: & \texttt{dimImmagine $>$ 0}\\
-    \texttt{cond2}: & \texttt{count $=$ 0} \\
-    \texttt{cond3}: & \texttt{count $=$ 1} \\
-    \texttt{cond4}: & \texttt{dimImmagine $>$ 0} \\
-    \texttt{cond5}: & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
-    \texttt{cond6}: & \texttt{count $\leq$ dimImmagine $+$ 2} \\
-    \texttt{cond7}: & \texttt{!cond1 \&\& !cond2 \&\& !cont5} \\    
-\end{tabular}
+    \begin{tabular}{||c|c||}
+        %\hline
+        \hline
+        \texttt{\emph{cond1}} & \texttt{count $=$ 0} \\
+        \hline
+        \texttt{\emph{cond2}} & \texttt{count $=$ 1} \\
+        \hline
+        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
+        \hline
+        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} \&\& \emph{!cond2} \&\& \emph{!cond3}} \\   
+        \hline
+        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0} \\
+        \hline
+        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2} \\      
+        \hline
+        %\hline
+        \end{tabular}
 \end{center}
 
-Si ricorda inoltre, che per ogni stato dell'FSM è presente un arco implicito diretto verso lo stato \texttt{WT\_STR}, 
-che simboleggia la possibilità di interrompere in qualsiasi momento l'esecuzione tramite un segnale \texttt{i\_rst $=$ 1}.
+Si ricorda inoltre, che per ogni stato dell'FSM è presente un arco uscente implicito diretto verso lo stato \texttt{WT\_STR}, 
+che simboleggia la possibilità di interrompere in qualsiasi momento l'elaborazione dell'immagine corrente, tramite un segnale \texttt{i\_rst $=$ 1}
 
 \end{document}
