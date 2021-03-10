@@ -24,12 +24,13 @@ END project_reti_logiche;
 ARCHITECTURE Behavioral OF project_reti_logiche IS
 	TYPE stato IS (WT_RST, WT_STR, WAIT_MEM, RD_REQ, RD_ROW, RD_COL, CMP_DATA, PREP_EL, EL_DATA, DONE);
 	SIGNAL next_state                       : stato;
-	SIGNAL byte_to_read, count, shift_level : INTEGER;
+	SIGNAL byte_to_read, count              : integer range 0 to 20000;
+	SIGNAL shift_level                      : integer range 0 to 9;
 	SIGNAL max, min                         : std_logic_vector(7 DOWNTO 0);
 BEGIN
 	PROCESS (i_clk, i_rst)
 	VARIABLE temp_integer : INTEGER;
-	VARIABLE temp_data    : std_logic_vector(15 DOWNTO 0);
+	VARIABLE temp_data    : unsigned(15 DOWNTO 0);
 	BEGIN
 		IF i_rst = '1' THEN
 			o_done     <= '0';
@@ -43,7 +44,7 @@ BEGIN
 						max         <= (OTHERS => '0');
 						min         <= (OTHERS => '1');
 						count       <= 0;
-						shift_level <= 3; --valore di controllo quasiasi (tra i non assumibili da shift_level)
+						shift_level <= 9; --valore di controllo quasiasi (tra i non assumibili da shift_level)
 						next_state  <= RD_REQ;
 					ELSE
 						next_state <= WT_STR;
@@ -59,7 +60,7 @@ BEGIN
 					ELSIF count = 1 THEN
 						next_state <= RD_ROW;
 					ELSE
-						IF shift_level = 3 THEN
+						IF shift_level = 9 THEN
 							next_state <= CMP_DATA;
 						ELSE
 							next_state <= EL_DATA;
@@ -99,23 +100,23 @@ BEGIN
 					--calcolo delta value e shift level
 					temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); --delta_value
 					IF temp_integer = 0 THEN
-						shift_level <= 256;
-					ELSIF temp_integer > 0 AND temp_integer < 3 THEN
-						shift_level <= 128;
-					ELSIF temp_integer > 2 AND temp_integer < 7 THEN
-						shift_level <= 64;
-					ELSIF temp_integer > 6 AND temp_integer < 15 THEN
-						shift_level <= 32;
-					ELSIF temp_integer > 14 AND temp_integer < 31 THEN
-						shift_level <= 16;
-					ELSIF temp_integer > 30 AND temp_integer < 63 THEN
 						shift_level <= 8;
-					ELSIF temp_integer > 62 AND temp_integer < 127 THEN
+					ELSIF temp_integer > 0 AND temp_integer < 3 THEN
+						shift_level <= 7;
+					ELSIF temp_integer > 2 AND temp_integer < 7 THEN
+						shift_level <= 6;
+					ELSIF temp_integer > 6 AND temp_integer < 15 THEN
+						shift_level <= 5;
+					ELSIF temp_integer > 14 AND temp_integer < 31 THEN
 						shift_level <= 4;
-					ELSIF temp_integer > 126 AND temp_integer < 255 THEN
+					ELSIF temp_integer > 30 AND temp_integer < 63 THEN
+						shift_level <= 3;
+					ELSIF temp_integer > 62 AND temp_integer < 127 THEN
 						shift_level <= 2;
-					ELSE
+					ELSIF temp_integer > 126 AND temp_integer < 255 THEN
 						shift_level <= 1;
+					ELSE
+						shift_level <= 0;
 					END IF;
 					next_state <= RD_REQ;
 				WHEN EL_DATA => --elaborate data
@@ -125,11 +126,11 @@ BEGIN
 					o_we      <= '1';
 					o_address <= std_logic_vector(to_unsigned(count + byte_to_read - 1, 16)); --conversione su 16 bit
 					--calcolo new_value del pixel corrente da scrivere
-					temp_integer := to_integer(unsigned(i_data) - unsigned(min)) * shift_level;
-					IF temp_integer >= 255 THEN
+					temp_data:= shift_left(resize((unsigned(i_data) - unsigned(min)),16),shift_level);
+					IF temp_data >= 255 THEN
 						o_data <= (OTHERS => '1');
 					ELSE
-						o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
+						o_data <= std_logic_vector(temp_data(7 downto 0));
 					END IF;
 					IF count < byte_to_read + 2 THEN
 						next_state <= RD_REQ;
