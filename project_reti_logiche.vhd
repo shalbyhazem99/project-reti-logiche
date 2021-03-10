@@ -23,9 +23,10 @@ ENTITY project_reti_logiche IS
 END project_reti_logiche;
 ARCHITECTURE Behavioral OF project_reti_logiche IS
 	TYPE stato IS (WT_RST, WT_STR, WAIT_MEM, RD_REQ, RD_ROW, RD_COL, CMP_DATA, PREP_EL, EL_DATA, DONE);
-	SIGNAL next_state                       : stato;
-	SIGNAL byte_to_read, count, shift_level : INTEGER;
-	SIGNAL max, min                         : std_logic_vector(7 DOWNTO 0);
+	SIGNAL next_state          : stato;
+	SIGNAL byte_to_read, count : INTEGER RANGE 0 TO 20000;
+	SIGNAL shift_level         : INTEGER RANGE 0 TO 9;
+	SIGNAL max, min            : std_logic_vector(7 DOWNTO 0);
 BEGIN
 	PROCESS (i_clk, i_rst)
 	VARIABLE temp_integer : INTEGER;
@@ -59,7 +60,7 @@ BEGIN
 					ELSIF count = 1 THEN
 						next_state <= RD_ROW;
 					ELSE
-						IF shift_level =  9 THEN
+						IF shift_level = 9 THEN
 							next_state <= CMP_DATA;
 						ELSE
 							next_state <= EL_DATA;
@@ -67,7 +68,7 @@ BEGIN
 					END IF;
 					temp_integer := count + 1; --INCREMENTO DI COUNT
 					count <= temp_integer;
-				--gruppo stati: calcolo dimensioni
+					--gruppo stati: calcolo dimensioni
 				WHEN RD_COL => --read column
 					byte_to_read <= TO_INTEGER(unsigned (i_data));
 					next_state   <= RD_REQ;
@@ -79,7 +80,7 @@ BEGIN
 					ELSE
 						next_state <= DONE;
 					END IF;
-				--gruppo stati: ricerca di massimo e minimo
+					--gruppo stati: ricerca di massimo e minimo
 				WHEN CMP_DATA => --compare data
 					IF count <= byte_to_read + 2 THEN
 						IF i_data < min THEN
@@ -88,13 +89,12 @@ BEGIN
 						IF i_data > max THEN
 							max <= i_data;
 						END IF;
-
 						next_state <= RD_REQ;
 					ELSE
 						count      <= 2;
 						next_state <= PREP_EL;
 					END IF;
-				--gruppo stati: elaborazione 
+					--gruppo stati: elaborazione
 				WHEN PREP_EL => --prepare elaboration
 					--calcolo delta value e shift level
 					temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); --delta_value
@@ -119,18 +119,18 @@ BEGIN
 					END IF;
 					next_state <= RD_REQ;
 				WHEN EL_DATA => --elaborate data
-						--elaborare il byte letto e scriverlo, enable memoria in write
-				IF count <= byte_to_read + 2 THEN
+					--elaborare il byte letto e scriverlo, enable memoria in write
+					IF count  <= byte_to_read + 2 THEN
 						o_en      <= '1';
 						o_we      <= '1';
 						o_address <= std_logic_vector(to_unsigned(count + byte_to_read - 1, 16)); --conversione su 16 bit
 						--calcolo new_value del pixel corrente da scrivere
-						temp_data:= shift_left(resize((unsigned(i_data) - unsigned(min)),16),shift_level);
-                                            IF temp_data >= 255 THEN
-                                                o_data <= (OTHERS => '1');
-                                            ELSE
-                                                o_data <= std_logic_vector(temp_data(7 downto 0));
-                                            END IF;
+						temp_data := shift_left(resize((unsigned(i_data) - unsigned(min)), 16), shift_level);
+						IF temp_data >= 255 THEN
+							o_data <= (OTHERS => '1');
+						ELSE
+							o_data <= std_logic_vector(temp_data(7 DOWNTO 0));
+						END IF;
 						next_state <= RD_REQ;
 					ELSE
 						next_state <= DONE;
