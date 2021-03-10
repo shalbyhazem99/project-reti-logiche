@@ -8,7 +8,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 ENTITY project_reti_logiche IS
-	PORT
+	PORT 
 	(
 		i_clk     : IN std_logic;
 		i_rst     : IN std_logic; --viene sempre dato prima della prima elaborazione o durante il processo
@@ -67,7 +67,7 @@ BEGIN
 					END IF;
 					temp_integer := count + 1; --INCREMENTO DI COUNT
 					count <= temp_integer;
-				--gruppo stati: calcolo dimensioni
+					--gruppo stati: calcolo dimensioni
 				WHEN RD_COL => --read column
 					byte_to_read <= TO_INTEGER(unsigned (i_data));
 					next_state   <= RD_REQ;
@@ -79,21 +79,22 @@ BEGIN
 					ELSE
 						next_state <= DONE;
 					END IF;
-				--gruppo stati: ricerca di massimo e minimo
+					--gruppo stati: ricerca di massimo e minimo
 				WHEN CMP_DATA => --compare data
-					IF count <= byte_to_read + 2 THEN
-						IF i_data < min THEN
-							min <= i_data;
-						END IF;
-						IF i_data > max THEN
-							max <= i_data;
-						END IF;
+
+					IF i_data < min THEN
+						min <= i_data;
+					END IF;
+					IF i_data > max THEN
+						max <= i_data;
+					END IF;
+					IF count < byte_to_read + 2 THEN
 						next_state <= RD_REQ;
 					ELSE
 						count      <= 2;
 						next_state <= PREP_EL;
 					END IF;
-				--gruppo stati: elaborazione 
+					--gruppo stati: elaborazione
 				WHEN PREP_EL => --prepare elaboration
 					--calcolo delta value e shift level
 					temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); --delta_value
@@ -118,30 +119,31 @@ BEGIN
 					END IF;
 					next_state <= RD_REQ;
 				WHEN EL_DATA => --elaborate data
-					IF count <= byte_to_read + 2 THEN
-						--elaborare il byte letto e scriverlo, enable memoria in write
-						o_en      <= '1';
-						o_we      <= '1';
-						o_address <= std_logic_vector(to_unsigned(count + byte_to_read - 1, 16)); --conversione su 16 bit
-						--calcolo new_value del pixel corrente da scrivere
-						temp_integer := to_integer(unsigned(i_data) - unsigned(min)) * shift_level;
-						IF temp_integer >= 255 THEN
-							o_data <= (OTHERS => '1');
-						ELSE
-							o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
-						END IF;
+ 
+					--elaborare il byte letto e scriverlo, enable memoria in write
+					o_en      <= '1';
+					o_we      <= '1';
+					o_address <= std_logic_vector(to_unsigned(count + byte_to_read - 1, 16)); --conversione su 16 bit
+					--calcolo new_value del pixel corrente da scrivere
+					temp_integer := to_integer(unsigned(i_data) - unsigned(min)) * shift_level;
+					IF temp_integer >= 255 THEN
+						o_data <= (OTHERS => '1');
+					ELSE
+						o_data <= std_logic_vector(to_unsigned(temp_integer, 8));
+					END IF;
+					IF count < byte_to_read + 2 THEN
 						next_state <= RD_REQ;
 					ELSE
 						next_state <= DONE;
 					END IF;
-				WHEN DONE =>
+				WHEN DONE => 
 					o_done <= '1';
 					IF (i_start = '0') THEN
 						next_state <= WT_STR;
 					ELSE
 						next_state <= DONE;
 					END IF;
-				WHEN OTHERS =>
+				WHEN OTHERS => 
 			END CASE;
 		END IF;
 	END PROCESS;

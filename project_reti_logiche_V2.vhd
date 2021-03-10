@@ -91,7 +91,7 @@ BEGIN
                     IF i_data > max THEN
                         max <= i_data;
                     END IF;
-					IF unsigned(row)-1 /= 0 THEN
+					IF unsigned(row)-1 /= 0 or unsigned(column)-1 /=0  THEN
 					   IF unsigned(column)-1 /=0 THEN
 					       temp_data := std_logic_vector(unsigned(column)-1);
 					       column <= temp_data;
@@ -136,7 +136,7 @@ BEGIN
 						o_en      <= '1';
 						o_we      <= '1';
 						--da fare
-						o_address <= std_logic_vector(to_unsigned(count+count_scrittura - 1, 16)); --conversione su 16 bit
+						o_address <= std_logic_vector(to_unsigned(count+count_scrittura - 3, 16)); --conversione su 16 bit
 						--calcolo new_value del pixel corrente da scrivere
 						temp_integer := to_integer(unsigned(i_data) - unsigned(min)) * shift_level;
 						IF temp_integer >= 255 THEN
