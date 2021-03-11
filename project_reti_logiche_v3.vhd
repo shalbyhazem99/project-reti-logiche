@@ -133,6 +133,7 @@ BEGIN
 					END IF;
 					next_state <= RD_REQ;
 				WHEN EL_DATA => --elaborate data
+				IF count <= temp_count THEN
 						--elaborare il byte letto e scriverlo, enable memoria in write
 						o_en <= '1';
 						o_we <= '1';
@@ -145,7 +146,6 @@ BEGIN
                                             ELSE
                                                 o_data <= std_logic_vector(temp_data(7 downto 0));
                                             END IF;
-					IF count <= temp_count THEN
 						next_state <= RD_REQ;
 					ELSE
 						next_state <= DONE;
