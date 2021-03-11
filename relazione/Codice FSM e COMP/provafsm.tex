@@ -105,7 +105,7 @@
 
         \draw   (0) edge                    node {\texttt{i\_rst=1}}                                            (1)
                 
-                (1) edge[loop left]                    node {}                                                  (1)
+                (1) edge[loop left]         node {\texttt{i\_start=0}}                                          (1)
                 (1) edge                    node [yshift=15pt, xshift=-38pt]{\texttt{i\_start=1}}               (5)
                 
                 (2) edge                    node {}                                                             (5)
@@ -128,8 +128,8 @@
                 (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
                 (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
                 
-                (9) edge[bend left]                    node {\texttt{i\_start=0}}                               (1)
-                (9) edge[loop left]                    node {}                                                  (9);
+                (9) edge[bend left]         node {\texttt{i\_start=0}}                                          (1)
+                (9) edge[loop left]         node {\texttt{i\_start=1}}                                          (9);
 
     \end{tikzpicture}
     \caption{Diagramma degli stati della macchina a stati finiti utilizzata}
