@@ -3,6 +3,8 @@
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning, arrows}
 
+\usepackage{circuitikz}
+
 \usepackage{geometry}
 \geometry {
     top=20mm,
@@ -30,8 +32,10 @@
         \coordinate[below right = 10mm and 7.5mm of comp.south]  (u1);
         \foreach \i [count=\xi from 1] in {2} 
             \coordinate[left=of u\xi]  (u\i);
-        \foreach \i [count=\xi from 1] in {\texttt{i\_clk}, \texttt{i\_rst}}
-            \draw[-latex']  (u\xi) node[below] {\i} -- (u\xi |- comp.south);
+        %\foreach \i [count=\xi from 1] in {\texttt{i\_clk}, \texttt{i\_rst}}
+            \draw[-open triangle 60]  (u1) node[below] {\texttt{i\_clk}} -- (u1 |- comp.south);
+            \draw[-latex]  (u2) node[below] {\texttt{i\_rst}} -- (u2 |- comp.south);
+            
         % out
         \coordinate[above right= 10mm and 20mm of comp.east]  (o1);
         \foreach \i [count=\xi from 1] in {2,...,5} 
@@ -46,44 +50,16 @@
     \label{fig:component}
 \end{figure}
 
-%\begin{figure}[ht]
-%    \centering 
-%    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
-%        semithick, initial text=$ $, initial where= above]
 
-%        \node[state, initial]           (0) {\texttt{WT\_RST}};
-%        \node[state, below of=0]        (1) {\texttt{WT\_STR}};
-%        \node[state, below of=1]        (2) {\texttt{RD\_COL}};
-%        \node[state, below of=2]        (3) {\texttt{RD\_ROW}};
-%        \node[state, below of=3]        (4) {\texttt{CPM\_DT}};
-%        \node[state, right=5cm of 3]    (5) {\texttt{RD\_REQ}};
-%        \node[state, right=5cm of 4]    (6) {\texttt{WT\_MEM}};
-%        \node[state, below of=4]        (7) {\texttt{PREP\_EL}};
-%        \node[state, below of=6]        (8) {\texttt{EL\_DATA}};
-%        \node[state, left of=7]        (9) {\texttt{DONE}};
+\tikzset{ flipflop myJK/.style={
+    flipflop,
+    flipflop def={t1=\texttt{ciao}, t2=K, t6=Q, t4={\ctikztextnot{Q}}, c3=1}}
+}
 
-%        \draw   (0) edge                        node {\texttt{i\_rst=1}}                                            (1)
-%                (1) edge[bend left]             node {\texttt{i\_start=1}}                                          (5)
-%                (5) edge                        node {}                                                             (6)
-%               (6) edge[bend left=15, right]   node [%yshift=10pt, xshift=-9pt
-%                at end, yshift=-15pt, xshift=-35pt] {\texttt{count=0}}                  (2)
-%                (6) edge[bend left=20, right]   node [%yshift=6pt, xshift=-5pt
-%                at end, yshift=-15pt, xshift=-33pt] {\texttt{count=1}}                   (3)
-%                (6) edge                        node [xshift=-20pt] {\texttt{\emph{cond2}}}                         (4)
-%                (6) edge                        node {}                                             (8)
-%                (2) edge[bend left=15, right]   node {}                                                             (5)
-%                (3) edge[bend left=20]          node {\texttt{\emph{cond1}}}                                        (5)
-%                (4) edge                        node [at start, yshift=7pt, xshift=25pt] {\texttt{\emph{cond3}}}    (5)
-%                (8) edge[bend right]            node[right]  {{\texttt{\emph{cond3}}}} (5)
-%                (3) edge[bend right,left]       node {\texttt{\emph{!cond1}}}                                       (9)
-%                (4) edge                        node[left] {\texttt{\emph{!cond3}}}                                 (7)
-%                (7) edge[bend right=10]         node {}                                                             (5)
-%                (8) edge[bend left=25]          node {{\texttt{\emph{!cond3}}}}                                     (9);
-
-%    \end{tikzpicture}
-%    \caption{Diagramma degli stati della macchina a stati finiti utilizzata}
-%    \label{fig:fsm}
-%\end{figure}
+\begin{circuitikz}
+    \node[flipflop myJK](D1){};
+    \draw (D1.pin 6) -- ++(2, 0);
+ \end{circuitikz}
 
 \pagebreak
 
@@ -137,18 +113,6 @@
 \end{figure}
 
 Le condizioni utilizzate nel processo sono le seguenti:
-
-%\begin{center}
-%    \begin{tabular}{ll}
-%    \texttt{cond1}: & \texttt{dimImmagine $>$ 0}\\
-%    \texttt{cond2}: & \texttt{count $=$ 0} \\
-%    \texttt{cond3}: & \texttt{count $=$ 1} \\
-%    \texttt{cond4}: & \texttt{dimImmagine $>$ 0} \\
-%    \texttt{cond5}: & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
-%    \texttt{cond6}: & \texttt{count $\leq$ dimImmagine $+$ 2} \\
-%    \texttt{cond7}: & \texttt{!cond1 \&\& !cond2 \&\& !cont5} \\    
-%    \end{tabular}
-%\end{center}
 
 \begin{center}
     \begin{tabular}{||c|c||}
