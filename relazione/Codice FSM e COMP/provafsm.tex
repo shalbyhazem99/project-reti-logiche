@@ -53,12 +53,12 @@
 
 \tikzset{ flipflop myJK/.style={
     flipflop,
-    flipflop def={t1=\texttt{ciao}, t2=K, t6=Q, t4={\ctikztextnot{Q}}, c3=1}}
+    flipflop def={t1=\texttt{i\_start}, t2=\texttt{i\_data}, t3=\texttt{i\_clk}, t6=Q, t4={\ctikztextnot{Q}}, c3=1}}
 }
 
 \begin{circuitikz}
     \node[flipflop myJK](D1){};
-    \draw (D1.pin 6) -- ++(2, 0);
+    \draw (D1.pin 6) -- ++(1, 0);
  \end{circuitikz}
 
 \pagebreak
@@ -80,30 +80,21 @@
         \node[state, left of=7]         (9) {\texttt{DONE}};
 
         \draw   (0) edge                    node {\texttt{i\_rst=1}}                                            (1)
-                
                 (1) edge[loop left]         node {\texttt{i\_start=0}}                                          (1)
                 (1) edge                    node [yshift=15pt, xshift=-38pt]{\texttt{i\_start=1}}               (5)
-                
                 (2) edge                    node {}                                                             (5)
-                
                 (3) edge                    node [xshift=-10pt] {\texttt{\emph{cond5}}}                         (5)
-                (3) edge[left]   node [yshift=40pt, xshift=20pt]{\texttt{\emph{!cond5}}}                        (9)
-                
+                (3) edge[left]              node [yshift=40pt, xshift=20pt]{\texttt{\emph{!cond5}}}             (9)
                 (4) edge                    node [at start, yshift=8pt, xshift=25pt] {\texttt{\emph{cond6}}}    (5)
                 (4) edge                    node[left] {\texttt{\emph{!cond6}}}                                 (7)
-                
                 (5) edge                    node {}                                                             (6)
-                
                 (6) edge[bend right, right] node {\texttt{\emph{cond1}}}                                        (2)
                 (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond2}}}               (3)
                 (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond3}}}               (4)
-                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)
-                
+                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)                
                 (7) edge                    node {}                                                             (5)
-                
                 (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
-                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
-                
+                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)  
                 (9) edge[bend left]         node {\texttt{i\_start=0}}                                          (1)
                 (9) edge[loop left]         node {\texttt{i\_start=1}}                                          (9);
 
