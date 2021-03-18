@@ -19,7 +19,8 @@ ARCHITECTURE projecttb OF project_tb IS
 	SIGNAL mem_we : std_logic;
 
 	TYPE ram_type IS ARRAY (65535 DOWNTO 0) OF std_logic_vector(7 DOWNTO 0);
-	SIGNAL RAM : ram_type := (0 => std_logic_vector(to_unsigned(4, 8)), 
+	SIGNAL RAM : ram_type := (
+		0 => std_logic_vector(to_unsigned(4, 8)), 
 		1 => std_logic_vector(to_unsigned(4, 8)), 
 		2 => std_logic_vector(to_unsigned(52, 8)), 
 		3 => std_logic_vector(to_unsigned(55, 8)), 

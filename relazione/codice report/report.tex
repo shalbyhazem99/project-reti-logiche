@@ -1,14 +1,18 @@
 \documentclass{article}
 
-%\usepackage{minted}
-\usepackage{tikz}
+\usepackage[italian]{babel} %testi autogenerati italiano
+\usepackage{minted}         %per codice vhdl bello
+\usepackage{tikz}           %per disegno fsm
 \usetikzlibrary{automata, positioning, arrows}
-\usepackage{graphicx}
-\usepackage{geometry}
+\usepackage{circuitikz}     %per disegno componente
+\usepackage{graphicx}       %per importare immagini
+\usepackage{geometry}       %per gestire margini e spostamenti
 \geometry {
     top=25mm,
     bmargin=25mm,
 }
+\usepackage{array}          %per colonne di width fissata
+\usepackage{subcaption}     %tabelle divise
 
 \begin{document}
 
@@ -55,19 +59,31 @@
 \section{Requisiti di progetto} %1
 
 \subsection{Descrizione del problema} %1.1
-Si vuole realizzare un componente in grado di svolgere una versione semplificata del processo di equalizzazione dell’istogramma di un’immagine, ossia di ricalibrare il contrasto di quest’ultima, effettuando una ridistribuzione dei valori di intensità pixel per pixel. \\
+Si vuole realizzare un componente in grado di svolgere una versione semplificata del processo di equalizzazione dell’istogramma di un’immagine, ossia di ricalibrare il contrasto di quest’ultima, \\effettuando una ridistribuzione dei valori di intensità pixel per pixel. \\\\
 Le immagini di cui è richiesta la manipolazione sono definite in scala di grigi a 256 livelli e hanno una dimensione massima di 128x128 pixel.
 
-\subsection{Interfaccia del componente}
-Il componente realizzato ha un’interfaccia così definita: \\
+\vspace{0,5cm} %un po' di spazio
 
-%\begin{minted}{vhdl}
-%    process
-%    begin
-%      CLK <= '1'; wait for 10 NS;
-%      CLK <= '0'; wait for 10 NS;
-%    end process;
-%\end{minted}
+\subsection{Interfaccia del componente} %1.2
+Il componente realizzato ha un’interfaccia così definita in liguaggio VHDL:
+
+\begin{minted}{vhdl}
+    ENTITY project_reti_logiche IS PORT
+	(
+		i_clk     : IN  std_logic;
+		i_rst     : IN  std_logic; 
+		i_start   : IN  std_logic; 
+		i_data    : IN  std_logic_vector (7 DOWNTO 0);
+		o_address : OUT std_logic_vector (15 DOWNTO 0);
+		o_done    : OUT std_logic; 
+		o_en      : OUT std_logic;
+		o_we      : OUT std_logic;
+		o_data    : OUT std_logic_vector (7 DOWNTO 0) 
+	);
+    END project_reti_logiche;
+\end{minted}
+
+\vspace{0,5cm} %un po' di spazio
 
 \noindent In particolare:
 \begin{itemize}
@@ -82,38 +98,154 @@ Il componente realizzato ha un’interfaccia così definita: \\
     \item \texttt{o\_data} è il segnale (vettore) di uscita dal componente verso la memoria.
 \end{itemize}
 
-%TODO sistemare
-\begin{figure}[ht] % ’ht’ tells LaTeX to place the figure ’here’ or at the top of the page
-    \centering % centers the figure
+\pagebreak
 
-    \begin{tikzpicture}[node distance = 5mm and 15mm]
-        \node (comp) [draw,minimum size=28mm] {\texttt{PROCESS}};
-        % in
-        \coordinate[above left= 10mm and 20mm of comp.west]  (i1);
-        \foreach \i [count=\xi from 1] in {2} 
-            \coordinate[below=of i\xi]  (i\i);
-        \foreach \i [count=\xi from 1] in {\texttt{i\_start}, \texttt{i\_data}}
-            \draw[-latex']  (i\xi) node[left] {\i} -- (i\xi-| comp.west);
-        %under
-        \coordinate[below right = 10mm and 7.5mm of comp.south]  (u1);
-        \foreach \i [count=\xi from 1] in {2} 
-            \coordinate[left=of u\xi]  (u\i);
-        %\foreach \i [count=\xi from 1] in {\texttt{i\_clk}, \texttt{i\_rst}}
-            \draw[-open triangle 60]  (u1) node[below] {\texttt{i\_clk}} -- (u1 |- comp.south);
-            \draw[-latex]  (u2) node[below] {\texttt{i\_rst}} -- (u2 |- comp.south);
-            
-        % out
-        \coordinate[above right= 10mm and 20mm of comp.east]  (o1);
-        \foreach \i [count=\xi from 1] in {2,...,5} 
-            \coordinate[below=of o\xi]  (o\i);
-        \foreach \i [count=\xi from 1] in {\texttt{o\_address}, \texttt{o\_done},
-                                                    \texttt{o\_en}, \texttt{o\_we}, \texttt{o\_data}}
-            \draw[-latex'] (comp.east |- o\xi) -- (o\xi) node[right] {\i};
-        %
-        \end{tikzpicture}
+\begin{figure}[ht]
 
+    \centering
+    \begin{circuitikz}
+        \ctikzset{multipoles/thickness=3.5}
+        \ctikzset{multipoles/dipchip/width=4}
+        %sinistra
+        \draw   (0,0) node[dipchip,
+                num pins=10, hide numbers, no topmark,
+                external pins width=0](C){\large{\texttt{COMPONENT}}};
+        \node   [right] at (C.bpin 1) {\texttt{i\_start}};
+        \draw   (C.bpin 1) -- ++(-1,0) coordinate(extpin);
+        \node   [right] at (C.bpin 2) {\texttt{i\_data}};
+        \draw   (C.bpin 2) -- ++(-1,0) coordinate(extpin);
+        \node   [right] at (C.bpin 4) {\texttt{i\_rst}};
+        \draw   (C.bpin 4) -- ++(-1,0) coordinate(extpin);
+        \draw   (C.bpin 5) ++(0,0.2) -- ++(0.2,-0.2)
+                node[right]{\texttt{i\_clk}} -- ++(-0.2,-0.2);
+        \draw   (C.bpin 5) -- ++(-1,0) coordinate(extpin);
+        %destra
+        \node   [left] at (C.bpin 6) {\texttt{o\_data}};
+        \draw   (C.bpin 6) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 7) {\texttt{o\_done}};
+        \draw   (C.bpin 7) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 8) {\texttt{o\_en}};
+        \draw   (C.bpin 8) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 9) {\texttt{o\_we}};
+        \draw   (C.bpin 9) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 10) {\texttt{o\_address}};
+        \draw   (C.bpin 10) -- ++(1,0) coordinate(extpin);
+        \end{circuitikz}
+
+    \setlength{\belowcaptionskip}{0.3cm} %un po' di spazio
     \caption{Schema del componente realizzato.}
     \label{fig:component}
 \end{figure}
+
+\subsection{Descrizione della memoria e dell'interazione con il componente} %1.3
+Il modulo implementato dovrà dialogare in lettura e scrittura con una RAM, indirizzata al byte.\\\\
+In particolare, l’algoritmo di equalizzazione sarà applicato a immagini pre-salvate in memoria, la cui grandezza effettiva (in pixel) sarà specificata dal prodotto del contenuto tra le celle a indirizzo \texttt{0} e \texttt{1} della RAM, contenenti rispettivamente il numero di colonne \texttt{n\_col} e di righe \texttt{n\_row} dell’immagine, entrambi di dimensione 8 bit.\\
+Nei byte successivi, dall’indirizzo \texttt{2} all’indirizzo \texttt{n\_col $\cdot$ n\_row $+$ 1}, sarà contenuta, pixel per pixel, sequenzialmente e in modo contiguo, l’immagine di cui è richiesta la trasformazione.\\
+Infine, l’immagine ottenuta dal processo di equalizzazione svolto dal componente verrà salvata in memoria dall’indirizzo \texttt{n\_col $\cdot$ n\_row $+$ 2} all’indirizzo \texttt{2 $\cdot$ n\_col $\cdot$ n\_row $+$ 1}.
+
+\vspace{0,5cm} %un po' di spazio
+
+\begin{table}[h]
+    \centering
+    \def\arraystretch{1.3} %un po' di padding
+
+    \caption{Schema generale del contenuto della memoria dopo l'elaborazione.}
+
+    \begin{tabular}{ |m{4cm} | m{5cm} }
+        \cline{1-1}
+        \texttt{n\_col} & \texttt{addr. 0} \\
+        \cline{1-1}
+        \texttt{n\_row} & \texttt{addr. 1} \\
+        \cline{1-1}
+        \texttt{Primo pixel immagine da elaborare} & \texttt{addr. 2} \\
+        \cline{1-1}
+        \vdots & \vdots \\
+        \cline{1-1}
+        \texttt{Ultimo pixel immagine da elaborare} & \texttt{addr. n\_col $\cdot$ n\_row $+$ 1} \\
+        \cline{1-1}
+        \texttt{Primo pixel immagine elaborata} & \texttt{addr. n\_col $\cdot$ n\_row $+$ 2} \\
+        \cline{1-1}
+        \vdots & \vdots \\
+        \cline{1-1}
+        \texttt{Ultimo pixel immagine elaborata} & \texttt{addr. 2 $\cdot$ n\_col $\cdot$ n\_row $+$ 1} \\
+        \cline{1-1}    
+        \end{tabular}
+    
+    \label{tab:schemamem}
+    
+\end{table}
+
+\vspace{0.3cm}
+
+\subsection{Esempio di funzionamento} %1.4
+Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test.
+
+\pagebreak
+
+\begin{figure}[ht]
+    \begin{minipage}[c]{.35\linewidth}
+    \centering 
+    \begin{tabular}{c|c}
+        addr. & data \\
+        \hline \hline
+        0  & 4   \\
+        1  & 4   \\
+        2  & 52  \\
+        3  & 62  \\
+        4  & 85  \\
+        5  & 87  \\
+        6  & 55  \\
+        7  & 59  \\
+        8  & 71  \\
+        9  & 78  \\
+        10 & 122 \\
+        12 & 68  \\
+        13 & 59  \\
+        14 & 68  \\
+        15 & 70  \\
+        16 & 113 \\
+        17 & 64  \\
+       \end{tabular}
+    \begin{tabular}{c|c}
+        addr. & data \\
+        \hline \hline
+        18 & 0   \\
+        19 & 12  \\
+        20 & 255 \\
+        21 & 72  \\
+        22 & 40  \\
+        23 & 28  \\
+        24 & 64  \\
+        25 & 244 \\
+        26 & 132 \\
+        27 & 76  \\
+        28 & 28  \\
+        29 & 48  \\
+        30 & 140 \\
+        31 & 104 \\
+        32 & 64  \\
+        33 & 68  \\
+        34 & :(  \\
+       \end{tabular}
+    \subcaption{Contenuto della memoria}\label{esempio1}
+    \end{minipage}%
+    \begin{minipage}[c]{.3\linewidth}
+    \centering
+        \includegraphics[scale=0.2]{immSorg.jpg}
+    \subcaption{Immagine sorgente}\label{esempio2}
+    \end{minipage}
+    \begin{minipage}[c]{.3\linewidth}
+        \centering
+            \includegraphics[scale=0.2]{immElab.jpg}
+        \subcaption{Immagine equalizzata}\label{esempio3}
+        \end{minipage}
+    \end{figure}
+
+\vspace{0.3cm}
+
+\noindent Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione 
+l'insieme di passaggi che permettono la trasformazione dell'immagine evidenziata dall'esempio, che verranno ripresi in seguito. 
+\\\\
+\noindent Si rende disponibile un TestBench che replica esattamente questo esempio a questo link:\\
 
 \end{document}

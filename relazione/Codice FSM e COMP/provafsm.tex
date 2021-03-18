@@ -1,5 +1,7 @@
 \documentclass{article}
 
+\usepackage{xcolor}
+
 \usepackage{tikz}
 \usetikzlibrary{automata, positioning, arrows}
 
@@ -10,6 +12,10 @@
     top=20mm,
     bmargin=25mm,
 }
+
+\usepackage{subfig}
+\usepackage{subcaption}
+
 
 \begin{document}
 
@@ -56,11 +62,40 @@
     flipflop def={t1=\texttt{i\_start}, t2=\texttt{i\_data}, t3=\texttt{i\_clk}, t6=Q, t4={\ctikztextnot{Q}}, c3=1}}
 }
 
-\begin{circuitikz}
-    \node[flipflop myJK](D1){};
-    \draw (D1.pin 6) -- ++(1, 0);
- \end{circuitikz}
 
+
+
+\begin{figure}
+    \centering
+    \begin{circuitikz}
+        \ctikzset{multipoles/thickness=3.5}
+        \ctikzset{multipoles/dipchip/width=4}
+        %sinistra
+        \draw   (0,0) node[dipchip,
+                num pins=10, hide numbers, no topmark,
+                external pins width=0](C){\large{\texttt{COMPONENT}}};
+        \node   [right] at (C.bpin 1) {\texttt{i\_start}};
+        \draw   (C.bpin 1) -- ++(-1,0) coordinate(extpin);
+        \node   [right] at (C.bpin 2) {\texttt{i\_data}};
+        \draw   (C.bpin 2) -- ++(-1,0) coordinate(extpin);
+        \node   [right] at (C.bpin 4) {\texttt{i\_rst}};
+        \draw   (C.bpin 4) -- ++(-1,0) coordinate(extpin);
+        \draw   (C.bpin 5) ++(0,0.2) -- ++(0.2,-0.2)
+                node[right]{\texttt{i\_clk}} -- ++(-0.2,-0.2);
+        \draw   (C.bpin 5) -- ++(-1,0) coordinate(extpin);
+        %destra
+        \node   [left] at (C.bpin 6) {\texttt{o\_data}};
+        \draw   (C.bpin 6) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 7) {\texttt{o\_done}};
+        \draw   (C.bpin 7) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 8) {\texttt{o\_en}};
+        \draw   (C.bpin 8) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 9) {\texttt{o\_we}};
+        \draw   (C.bpin 9) -- ++(1,0) coordinate(extpin);
+        \node   [left] at (C.bpin 10) {\texttt{o\_address}};
+        \draw   (C.bpin 10) -- ++(1,0) coordinate(extpin);
+        \end{circuitikz}
+\end{figure}
 \pagebreak
 
 \begin{figure}[ht]
@@ -127,5 +162,126 @@ Le condizioni utilizzate nel processo sono le seguenti:
 
 Si ricorda inoltre, che per ogni stato dell'FSM è presente un arco uscente implicito diretto verso lo stato \texttt{WT\_STR}, 
 che simboleggia la possibilità di interrompere in qualsiasi momento l'elaborazione dell'immagine corrente, tramite un segnale \texttt{i\_rst $=$ 1}
+
+%con subfig ma non funzionava
+\pagebreak
+\begin{table}
+    \centering
+    \caption{Esempio}
+    \subfloat[Contenuto della memoria]{
+        \begin{tabular}{c|c}
+            addr. & data \\
+            \hline \hline
+            0 & 14      \\
+            1 & 12      \\
+            2 & 13      \\
+            3 & 7       \\
+            4 & 13      \\
+            5 & 13      \\
+            6 & 7       \\
+            7 & 13      \\
+            8 & 13      \\
+            9 & 14      \\
+            10 & 12      \\
+            12 & 13      \\
+            13 & 7       \\
+            14 & 13      \\
+            15 & 13      \\
+            16 & 7       \\
+            17 & 13      \\
+           \end{tabular}\hspace{0.3cm}
+        \begin{tabular}{c|c}
+            addr. & data \\
+            \hline \hline
+            0 & 14      \\
+            1 & 12      \\
+            2 & 13      \\
+            3 & 7       \\
+            4 & 13      \\
+            5 & 13      \\
+            6 & 7       \\
+            7 & 13      \\
+            8 & 13      \\
+            9 & 14      \\
+            10 & 12      \\
+            12 & 13      \\
+            13 & 7       \\
+            14 & 13      \\
+            15 & 13      \\
+            16 & 7       \\
+            17 & 13      \\
+           \end{tabular}
+    }\hspace{0.5cm}
+    \subfloat[Immagine sorgente]{
+        \includegraphics[scale=0.2]{immSorg.jpg}
+    }\hspace{0.3cm}
+    \subfloat[Immagine equalizzata]{
+        \includegraphics[scale=0.2]{immElab.jpg}
+    }
+  \end{table}
+
+  \pagebreak
+
+  %con subcaption commenta subfig
+%   \begin{figure}
+%     \begin{minipage}[c]{.35\linewidth}
+%     \centering 
+%     \begin{tabular}{c|c}
+%         addr. & data \\
+%         \hline \hline
+%         0 & 14      \\
+%         1 & 12      \\
+%         2 & 13      \\
+%         3 & 7       \\
+%         4 & 13      \\
+%         5 & 13      \\
+%         6 & 7       \\
+%         7 & 13      \\
+%         8 & 13      \\
+%         9 & 14      \\
+%         10 & 12      \\
+%         12 & 13      \\
+%         13 & 7       \\
+%         14 & 13      \\
+%         15 & 13      \\
+%         16 & 7       \\
+%         17 & 13      \\
+%        \end{tabular}
+%     \begin{tabular}{c|c}
+%         addr. & data \\
+%         \hline \hline
+%         0 & 14      \\
+%         1 & 12      \\
+%         2 & 13      \\
+%         3 & 7       \\
+%         4 & 13      \\
+%         5 & 13      \\
+%         6 & 7       \\
+%         7 & 13      \\
+%         8 & 13      \\
+%         9 & 14      \\
+%         10 & 12      \\
+%         12 & 13      \\
+%         13 & 7       \\
+%         14 & 13      \\
+%         15 & 13      \\
+%         16 & 7       \\
+%         17 & 13      \\
+%        \end{tabular}
+%     \subcaption{A subfigure}\label{esempio1}
+%     \end{minipage}%
+%     \begin{minipage}[c]{.3\linewidth}
+%     \centering
+%         \includegraphics[scale=0.2]{immSorg.jpg}
+%     \subcaption{Another subfigure}\label{esempio2}
+%     \end{minipage}
+%     \begin{minipage}[c]{.3\linewidth}
+%         \centering
+%             \includegraphics[scale=0.2]{immElab.jpg}
+%         \subcaption{Another subfigure}\label{esempio3}
+%         \end{minipage}
+%     \end{figure}
+
+  ciao sono un testo
 
 \end{document}
