@@ -16,6 +16,8 @@
 
 \begin{document}
 
+\setlength\parindent{0pt} %noindent automatico
+
 \begin{titlepage}
     \centering
     \hrule
@@ -85,7 +87,7 @@ Il componente realizzato ha un’interfaccia così definita in liguaggio VHDL:
 
 \vspace{0,5cm} %un po' di spazio
 
-\noindent In particolare:
+In particolare:
 \begin{itemize}
     \item \texttt{i\_clk} è il segnale di CLOCK in ingresso generato dal TestBench;
     \item \texttt{i\_rst} è il segnale di RESET che inizializza la macchina, predisponendola alla ricezione del segnale di START. Può essere anche asincrono;
@@ -132,7 +134,7 @@ Il componente realizzato ha un’interfaccia così definita in liguaggio VHDL:
         \draw   (C.bpin 10) -- ++(1,0) coordinate(extpin);
         \end{circuitikz}
 
-    \setlength{\belowcaptionskip}{0.3cm} %un po' di spazio
+    \setlength{\belowcaptionskip}{0.1cm} %un po' di spazio
     \caption{Schema del componente realizzato.}
     \label{fig:component}
 \end{figure}
@@ -183,6 +185,7 @@ Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test
 \pagebreak
 
 \begin{figure}[ht]
+    \hspace{-10pt}
     \begin{minipage}[c]{.35\linewidth}
     \centering 
     \begin{tabular}{c|c}
@@ -199,16 +202,17 @@ Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test
         8  & 71  \\
         9  & 78  \\
         10 & 122 \\
-        12 & 68  \\
-        13 & 59  \\
-        14 & 68  \\
-        15 & 70  \\
-        16 & 113 \\
-        17 & 64  \\
+        11 & 68  \\
+        12 & 59  \\
+        13 & 68  \\
+        14 & 70  \\
+        15 & 113 \\
+        16 & 64  \\
        \end{tabular}
     \begin{tabular}{c|c}
         addr. & data \\
         \hline \hline
+        17 & 69  \\
         18 & 0   \\
         19 & 12  \\
         20 & 255 \\
@@ -225,27 +229,32 @@ Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test
         31 & 104 \\
         32 & 64  \\
         33 & 68  \\
-        34 & :(  \\
        \end{tabular}
     \subcaption{Contenuto della memoria}\label{esempio1}
     \end{minipage}%
     \begin{minipage}[c]{.3\linewidth}
     \centering
-        \includegraphics[scale=0.2]{immSorg.jpg}
+        \includegraphics[scale=0.25]{immSorg.jpg}
     \subcaption{Immagine sorgente}\label{esempio2}
-    \end{minipage}
+    \end{minipage}\hspace{20pt}
     \begin{minipage}[c]{.3\linewidth}
         \centering
-            \includegraphics[scale=0.2]{immElab.jpg}
+            \includegraphics[scale=0.25]{immElab.jpg}
         \subcaption{Immagine equalizzata}\label{esempio3}
         \end{minipage}
     \end{figure}
 
 \vspace{0.3cm}
 
-\noindent Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione 
-l'insieme di passaggi che permettono la trasformazione dell'immagine evidenziata dall'esempio, che verranno ripresi in seguito. 
+È evidente come l'immagine \small (c) \normalsize presenti un contrasto maggiore rispetto alla \small(b)\normalsize. Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immagine, come evidenziato dalla tabella di memoria:
+\begin{itemize}
+    \item Immagine sorgente, addr. 2 - 17: i pixel assumono valori da 52 a 122;
+    \item Immagine equalizzata, addr. 18 - 33: i pixel assumono valori da 0 a 255.
+\end{itemize}
+
+Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione 
+l'insieme di passaggi che permettono la trasformazione dell'immagine riportata nell'esempio, che verranno ripresi in seguito. 
 \\\\
-\noindent Si rende disponibile un TestBench che replica esattamente questo esempio a questo link:\\
+Si rende disponibile un TestBench che replica l'elaborazione dell'immagine \small (b) \normalsize a questo link:\\
 
 \end{document}
