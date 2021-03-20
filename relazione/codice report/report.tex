@@ -13,6 +13,11 @@
 }
 \usepackage{array}          %per colonne di width fissata
 \usepackage{subcaption}     %tabelle divise
+\usepackage{hyperref}       %links
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+}
 
 \begin{document}
 
@@ -253,8 +258,14 @@ Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test
 \end{itemize}
 
 Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione 
-l'insieme di passaggi che permettono la trasformazione dell'immagine riportata nell'esempio, che verranno ripresi in seguito. 
-\\\\
-Si rende disponibile un TestBench che replica l'elaborazione dell'immagine \small (b) \normalsize a questo link:\\
+l'insieme di passaggi che permettono la trasformazione dell'immagine riportata nell'esempio, che verranno ripresi in seguito. \\\\
+Si rende disponibile un TestBench che replica l'elaborazione dell'immagine \small (b) \normalsize a questo \href{festadelsalame.com}{link}. \par
+
+\vspace{3cm}
+
+\section{Design del componente}
+Si è scelto di descrivere un modulo single-process tramite architettura behavioral (comportamentale) in linguaggio VHDL. 
+Questo ha determinato la necessità di sviluppare un algoritmo adeguato allo svolgimento dell’operazione richiesta al componente, che può essere schematizzato secondo i seguenti passaggi chiave:
+
 
 \end{document}
