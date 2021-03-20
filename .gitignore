@@ -4,4 +4,5 @@
 *.fls
 *.log
 *.synctex.gz
+*.out
 relazione/codice report/_minted-report/
