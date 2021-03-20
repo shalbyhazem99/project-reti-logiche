@@ -8,8 +8,8 @@
 \usepackage{graphicx}       %per importare immagini
 \usepackage{geometry}       %per gestire margini e spostamenti
 \geometry {
-    top=25mm,
-    bmargin=25mm,
+    top=20mm,
+    bmargin=20mm,
 }
 \usepackage{array}          %per colonne di width fissata
 \usepackage{subcaption}     %tabelle divise
@@ -34,7 +34,7 @@
         Dipartimento di Elettronica, Informazione e Bioingegneria
     }
 
-    \vspace{4,1cm}
+    \vspace{5cm}
     {\Huge \textbf{Progetto di Reti Logiche\\
             2020/21}\\}
 
@@ -51,7 +51,7 @@
 
     }
 
-    \vspace{3,8cm}
+    \vspace{4cm}
 
     \normalsize{1 Aprile 2021}
     \vspace{0,2cm}
@@ -90,7 +90,6 @@ Il componente realizzato ha un’interfaccia così definita in liguaggio VHDL:
 	);
     END project_reti_logiche;
 \end{minted}
-
 \vspace{0,3cm} %un po' di spazio
 
 In particolare:
@@ -139,7 +138,6 @@ In particolare:
         \node   [left] at (C.bpin 10) {\texttt{o\_address}};
         \draw   (C.bpin 10) -- ++(1,0) coordinate(extpin);
     \end{circuitikz}
-
     \caption{Schema del componente realizzato.}
     \label{fig:component}
 \end{figure}
@@ -155,8 +153,8 @@ Infine, l’immagine ottenuta dal processo di equalizzazione svolto dal componen
 \begin{table}[h]
     \centering
     \def\arraystretch{1.3} %un po' di padding
-
     \caption{Schema generale del contenuto della memoria dopo l'elaborazione.}
+    \label{tab:schemamem}
 
     \begin{tabular}{ |m{4cm} | m{5cm} }
         \cline{1-1}
@@ -177,11 +175,7 @@ Infine, l’immagine ottenuta dal processo di equalizzazione svolto dal componen
         \texttt{Ultimo pixel immagine elaborata}    & \texttt{addr. 2 $\cdot$ n\_col $\cdot$ n\_row $+$ 1} \\
         \cline{1-1}
     \end{tabular}
-
-    \label{tab:schemamem}
-
 \end{table}
-
 \vspace{0.3cm}
 
 \subsection{Esempio di funzionamento} %1.4
@@ -249,7 +243,6 @@ Si riporta in seguito un'esempio di elaborazione compiuta su un'immagine di test
         \subcaption{Immagine equalizzata}\label{esempio3}
     \end{minipage}
 \end{figure}
-
 \vspace{0.3cm}
 
 È evidente come l'immagine \small (c) \normalsize presenti un contrasto maggiore rispetto alla \small(b)\normalsize. 
@@ -261,15 +254,14 @@ Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immag
 
 Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione
 l'insieme di passaggi che permettono la trasformazione dell'immagine riportata nell'esempio, che verranno ripresi in seguito. \par
-Si rende disponibile un TestBench che replica l'elaborazione dell'immagine \small (b) \normalsize a questo \href{festadelsalame.com}{link}. \par
+Si rende disponibile un TestBench che replica l'elaborazione dell'immagine \small (b) \normalsize a questo \href{festadelsalame.com}{link}.
 
-\vspace{2,5cm}
+\vspace{.6cm}
 
 \section{Design del componente} %2
 Si è scelto di descrivere un modulo \emph{single-process} tramite architettura \emph{behavioral} (comportamentale) in linguaggio VHDL.
 Questo ha determinato la necessità di sviluppare un algoritmo adeguato allo svolgimento dell’operazione richiesta al componente, 
 che può essere schematizzato secondo i seguenti passaggi chiave:
-
 \begin{itemize}
     \item   [1.]    Lettura \texttt{n\_col} e \texttt{n\_row};
     \item   [2.]    Calcolo dimensione dell'immagine;
@@ -282,11 +274,10 @@ Il modulo prodotto opera quindi su una macchina a stati finiti che si occupa nel
 \vspace{0,3cm}
 
 \subsection{Macchina a stati finiti} %2.1
-
 L’FSM da noi prodotta è composta da 10 stati, suddivisibili in 4 gruppi principali descritti di seguito.
 
 \subsubsection{Stati ausiliari} %2.1.1
-Gruppo di stati che realizza: inizio, richiesta di lettura, attesa della memoria e fine del processo.\par
+Gruppo di stati che realizza: inizio, richiesta di lettura, attesa della memoria e fine del processo.
 
 \begin{itemize}
     \item [i.]      \textbf{\texttt{WT\_RST} - wait reset}: stato di attesa del segnale \texttt{i\_rst};
@@ -301,7 +292,7 @@ Gruppo di stati che realizza: inizio, richiesta di lettura, attesa della memoria
 \end{itemize}
 
 \subsubsection{Calcolo dimensioni dell'immagine} %2.1.2
-Gruppo di stati che permette il calcolo della dimensione effettiva dell’immagine da elaborare.\pagebreak
+Gruppo di stati che permette il calcolo della dimensione effettiva dell’immagine da elaborare.
 
 \begin{itemize}
     \item [vi.]     \textbf{\texttt{RD\_COL} - read column}: stato in cui il valore \texttt{n\_col} relativo all’immagine, pronto su \texttt{i\_data}, è salvato su una variabile temporanea per essere utilizzato in seguito;
@@ -331,6 +322,27 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
                     \end{itemize}
 \end{itemize}
 
+\subsubsection{Diagramma della Macchina a stati finiti}
+\begin{table}[h]
+    \centering
+    \caption{Tabella delle condizioni presenti nel processo come dimostrato nella \hyperref[fig:fsm]{Figura 3}}
+    \begin{tabular}{||c|c||}
+        %\hline
+        \hline
+        \texttt{\emph{cond1}} & \texttt{count $=$ 0} \\
+        \hline
+        \texttt{\emph{cond2}} & \texttt{count $=$ 1} \\
+        \hline
+        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
+        \hline
+        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} \&\& \emph{!cond2} \&\& \emph{!cond3}} \\   
+        \hline
+        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0} \\
+        \hline
+        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2} \\      
+        \hline
+        \end{tabular}
+\end{table}
 \pagebreak
 
 %immagine FSM
@@ -373,33 +385,11 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
     \caption{Diagramma degli stati della macchina a stati finiti utilizzata}
     \label{fig:fsm}
 \end{figure}
-
 \vspace{0,3cm}
-Le condizioni utilizzate nel processo sono le seguenti:
 
-\begin{center}
-    \begin{tabular}{||c|c||}
-        %\hline
-        \hline
-        \texttt{\emph{cond1}} & \texttt{count $=$ 0} \\
-        \hline
-        \texttt{\emph{cond2}} & \texttt{count $=$ 1} \\
-        \hline
-        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
-        \hline
-        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} \&\& \emph{!cond2} \&\& \emph{!cond3}} \\   
-        \hline
-        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0} \\
-        \hline
-        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2} \\      
-        \hline
-        %\hline
-        \end{tabular}
-\end{center}
-
-\vspace{0,3cm}
 Si ricorda inoltre, che per ogni stato dell'FSM è presente un arco uscente implicito diretto verso lo stato \texttt{WT\_STR}, 
 che simboleggia la possibilità di interrompere in qualsiasi momento l'elaborazione dell'immagine corrente, tramite un segnale \texttt{i\_rst $=$ 1}.
+\vspace{0,3cm}
 
 \subsection{Approfondimento sull'equalizzazione dell'immagine} %2.2
 \label{sec:appr}
@@ -415,6 +405,7 @@ La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondame
             \vspace{0,3cm}
             \begin{table}[h]
                 \centering
+                \small
                 \def\arraystretch{1.3} %un po' di padding
                 \caption{Esempi di valori di \texttt{delta\_value}, \texttt{floor(x)} e \texttt{shift\_level} possibili per la codifica delle immagini in scala di grigi a 256 livelli.}
                 \begin{tabular}{||c|c|c||}
@@ -460,19 +451,18 @@ La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondame
             \vspace{0,3cm}
 
     \item   \texttt{temp\_pixel $=$ (current\_pixel $-$ min) $<<$ shift\_level}\\
-            \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di 255 imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”}.
+            \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di 255 imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”};
     \item   \texttt{new\_pixel $=$ min(255, temp\_pixel)}\\
             \texttt{new\_pixel} è pari al minimo tra \texttt{255} e \texttt{temp\_pixel} e rappresenta l’effettivo valore che verrà scritto sulla RAM per il pixel considerato in questa iterazione.
-\end{itemize}\par
+\end{itemize}
 
 Riprendendo quindi l'esempio proposto nella \hyperref[sec:esempio]{Sezione 1.4}:
 \begin{itemize}
-    \item   \texttt{delta\_value $=$ max $-$ min = 122 - $-$ 52 = 70}\\
-    \item   \texttt{shift\_value $=$ (8 $-$ floor($\log_{2} $(delta\_value $+$ 1))) $=$ 8 - floor(6.149) = 2}\\
+    \item   \texttt{delta\_value $=$ max $-$ min = 122 - $-$ 52 = 70}
+    \item   \texttt{shift\_value $=$ (8 $-$ floor($\log_{2} $(delta\_value $+$ 1))) $=$ 8 - floor(6.149) = 2}
 \end{itemize}
 
-Iterando quindi sui pixel dell'immagine sorgente:\\
-
+Iterando quindi sui pixel dell'immagine sorgente:
 \begin{center}
     \def\arraystretch{1.3} %un po' di padding
     \begin{tabular}{||c|c|c||} 
@@ -482,7 +472,6 @@ Iterando quindi sui pixel dell'immagine sorgente:\\
         52       & 0         & 0         \\\hline
         55       & 12        & 12        \\\hline
         122      & 5         & 255       \\\hline
-        70       & 72        & 72        \\\hline
         \vdots   & \vdots    & \vdots    \\\hline
     \end{tabular}        
 \end{center}
