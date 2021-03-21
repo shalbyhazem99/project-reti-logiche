@@ -334,7 +334,7 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
         \hline
         \texttt{\emph{cond2}} & \texttt{count $=$ 1} \\
         \hline
-        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 3 (non ancora calcolato)} \\
+        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 9 (non ancora calcolato)} \\
         \hline
         \texttt{\emph{cond4}} & \texttt{\emph{!cond1} \&\& \emph{!cond2} \&\& \emph{!cond3}} \\   
         \hline
@@ -473,7 +473,7 @@ Iterando quindi sui pixel dell'immagine sorgente:
         \hline \hline
         52       & 0         & 0         \\\hline
         55       & 12        & 12        \\\hline
-        122      & 5         & 255       \\\hline
+        122      & 280       & 255       \\\hline
         70       & 72        & 72        \\\hline
         \vdots   & \vdots    & \vdots    \\\hline
     \end{tabular}        
@@ -482,7 +482,7 @@ Iterando quindi sui pixel dell'immagine sorgente:
 
 \subsection{Scelte progettuali e ottimizzazioni} %2.3
 Si è scelto di progettare un componente sensibile al clock su \emph{rising\_edge}.\par
-Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \emph{DPS}\footnotemark.
+Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \emph{DSP}\footnotemark.
 Si noti inoltre che l’operazione di moltiplicazione ricorre una sola volta nell’intera elaborazione di ogni singola immagine, e non risulta quindi particolarmente rilevante rispetto all’intero processo. Questo è stato verificato attraverso lo sviluppo simultaneo rispetto alla versione proposta di una ulteriore implementazione che non facesse uso di nessun prodotto all’interno del processo. In quest’ultima non si sono osservati vantaggi significativi in termini di tempo e area di sintesi, a scapito della leggibilità del codice stesso.\par
 Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\par 
 Di seguito si riporta il blocco IF/ELSE che si è utilizzato per il calcolo dello \texttt{shift\_value} relativo a un dato \texttt{delta\_value}:
@@ -519,7 +519,7 @@ Il corretto funzionamento del componente sviluppato è stato verificato tramite 
 \begin{itemize}
     \item   Corretto calcolo e utilizzo di tutti i possibili \texttt{shift\_value};
     \item   Condizione particolare: \texttt{n\_col $\cdot$ n\_row $=$ 0}\footnotemark ;
-            \footnotetext{\texttt{n\_col $=$ 0 $\cup$ n\_row $=$ 0 $\cup$ n\_col $=$ 0 $\cap$ n\_row $=$ 0}.}
+            \footnotetext{\texttt{n\_col $=$ 0 $\cup$ n\_row $=$ 0.}}
     \item   Casi limite di dimensione dell’immagine \texttt{1x1} e \texttt{128x128};
     \item   Caso di reset dell’elaborazione;
     \item   Caso di reset dell’elaborazione seguito da un cambio di immagine in memoria;
@@ -527,16 +527,22 @@ Il corretto funzionamento del componente sviluppato è stato verificato tramite 
 \end{itemize}
 
 Al fine di verificare la correttezza degli ultimi 3 punti in elenco, si è rivelata particolarmente utile l'analisi grafica dei segnali di input/output del modulo.
+\vspace{0,3cm}
 
 \begin{figure}[ht]
-    \includegraphics[scale=0.2]{immElab.jpg}
+    \centering
+    \includegraphics[scale=0.9]{segnaliSignificativi.jpg}
+    \caption{Analisi dei segnali \texttt{i\_start}, \texttt{i\_rst} e \texttt{o\_done} nell'elaborazione di 4 immagini sequenziali.}
 \end{figure}
 \vspace{0,3cm}
 
-Si sono utilizzati diversi \emph{TestBench} con caratteristiche differenti e dimensioni variabili dalla singola alle \texttt{10000} immagini (\emph{TB10K}), redatti manualmente (da colleghi e da noi) o auto-generati tramite uno script python appositamente creato.
+Si sono utilizzati diversi \emph{TestBench} con caratteristiche differenti e dimensioni variabili dalla singola alle \texttt{10000} immagini (\emph{TB\texttt{10K}}), redatti manualmente (da colleghi e da noi) o auto-generati tramite uno script python appositamente creato.
+\vspace{0,3cm}
 
 \begin{figure}[ht]
-    \includegraphics[scale=0.2]{immElab.jpg}
+    \centering
+    \includegraphics[scale=0.8]{2x2.jpg}
+    \caption{Analisi dei segnali di simulazione del \emph{TestBench TB\texttt{2x2}} fornito con la specifica di progetto.}
 \end{figure}
 \vspace{0,3cm}
 
@@ -568,7 +574,7 @@ Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}
 \vspace{0,3cm}
 
 \subsection{Risultati di simulazione}
-Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con successo le simulazioni richieste dalle specifiche di progetto, di cui si riportano come riferimento di tempi di esecuzione relativi al \emph{TestBench TB10K}:\par
+Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con successo le simulazioni richieste dalle specifiche di progetto, di cui si riportano come riferimento di tempi di esecuzione relativi al \emph{TestBench TB\texttt{10K}}:\par
 \def\arraystretch{1.3} %un po' di padding
 \begin{tabular}{m{8cm} m{3cm}}
     \tabitem Simulazione \emph{behavioral}:                 & \texttt{459410050000ps}  \\  
@@ -577,10 +583,10 @@ Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con su
 
 Si è inoltre verificato che il componente progettato supera le seguenti simulazioni non richieste:\par
 \def\arraystretch{1.3} %un po' di padding
-\begin{tabular}{m{8cm} m{3cm}}
-    \tabitem Simulazione \emph{post-synthesis timing}:          & \texttt{}  \\  
-    \tabitem Simulazione \emph{post-implementation functional}: & \texttt{}  \\  
-    \tabitem Simulazione \emph{post-implementation timing}:     & \texttt{}  \\  
+\begin{tabular}{m{8cm}}
+    \tabitem Simulazione \emph{post-synthesis timing}; \\
+    \tabitem Simulazione \emph{post-implementation functional}; \\
+    \tabitem Simulazione \emph{post-implementation timing}. \\
 \end{tabular}\vspace{1cm}
 
 \section{Conclusioni}
