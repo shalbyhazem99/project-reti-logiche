@@ -5,4 +5,8 @@
 *.log
 *.synctex.gz
 *.out
+*.idx
+*.ilg
+*.ind
+*.toc
 relazione/codice report/_minted-report/
