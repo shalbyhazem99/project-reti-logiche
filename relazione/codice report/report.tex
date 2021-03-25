@@ -252,7 +252,7 @@ Si riporta in seguito un esempio di elaborazione compiuta su un'immagine di test
 \end{figure}
 \vspace{0.3cm}
 
-È evidente come l'immagine \small (c) \normalsize presenti un contrasto maggiore rispetto alla \small(b)\normalsize. 
+È evidente come l'immagine \small (c) \normalsize presenti un contrasto maggiore rispetto alla \small(b)\normalsize.
 Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immagine \small (c)\normalsize, come evidenziato anche dal contenuto della memoria:
 \begin{itemize}
     \item Immagine sorgente, addr. 2 - 17: i pixel assumono valori da 52 a 122;
@@ -319,12 +319,12 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
 \begin{itemize}
     \item   [ix.]   \textbf{\texttt{PREP\_EL} - prepare elaboration}: stato in cui vengono stabiliti, per mezzo dei dati ottenuti negli stati precedenti, il \texttt{delta\_value} e lo \texttt{shift\_level} relativi all’immagine da elaborare, necessari per il proseguimento del processo;
     \item   [x.]    \textbf{\texttt{EL\_DATA} - elaborate data}: stato in cui si svolge l’elaborazione effettiva del pixel dell’immagine relativo all’iterazione corrente. In particolare:
-                    \begin{itemize}
-                        \item [a.]  Si abilita in scrittura la memoria, ponendo in \texttt{o\_address} il valore dell’indirizzo di destinazione per la scrittura: \texttt{count $-$ 1 $+$ n\_col $\cdot$ n\_row}\footnotemark;
-                                    \footnotetext{Essendo \texttt{count} già stato incrementato nello scorso passaggio dallo stato \texttt{WT\_MEM}, il pixel elaborato ad ogni iterazione è contenuto nell'indirizzo \texttt{count $-$ 1} della memoria.}
-                        \item [b.]  Il valore del pixel dell’immagine originale, disponibile su \texttt{i\_data}, è utilizzato per calcolare quello del rispettivo pixel nell’immagine trasformata, il quale viene posto in \texttt{o\_data} per essere scritto in memoria;
-                        \item [c.]  Se la condizione di termine dell’elaborazione dell’immagine (\texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}) si verifica, si passa a \texttt{DONE}, altrimenti si procede con l’equalizzazione del pixel successivo.
-                    \end{itemize}
+          \begin{itemize}
+              \item [a.]  Si abilita in scrittura la memoria, ponendo in \texttt{o\_address} il valore dell’indirizzo di destinazione per la scrittura: \texttt{count $-$ 1 $+$ n\_col $\cdot$ n\_row}\footnotemark;
+                    \footnotetext{Essendo \texttt{count} già stato incrementato nello scorso passaggio dallo stato \texttt{WT\_MEM}, il pixel elaborato ad ogni iterazione è contenuto nell'indirizzo \texttt{count $-$ 1} della memoria.}
+              \item [b.]  Il valore del pixel dell’immagine originale, disponibile su \texttt{i\_data}, è utilizzato per calcolare quello del rispettivo pixel nell’immagine trasformata, il quale viene posto in \texttt{o\_data} per essere scritto in memoria;
+              \item [c.]  Se la condizione di termine dell’elaborazione dell’immagine (\texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}) si verifica, si passa a \texttt{DONE}, altrimenti si procede con l’equalizzazione del pixel successivo.
+          \end{itemize}
 \end{itemize}
 
 \subsubsection{Diagramma della macchina a stati finiti}
@@ -332,30 +332,22 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
     \centering
     \caption{Condizioni presenti nel processo, come mostrato in \hyperref[fig:fsm]{Figura 3}.}
     \begin{tabular}{||c|c||}
-        %\hline
         \hline
-        \texttt{\emph{cond1}} & \texttt{count $=$ 0} \\
-        \hline
-        \texttt{\emph{cond2}} & \texttt{count $=$ 1} \\
-        \hline
-        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 9 (non ancora calcolato)} \\
-        \hline
-        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} $\wedge$ \emph{!cond2} $\wedge$ \emph{!cond3}} \\   
-        \hline
-        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0} \\
-        \hline
-        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2} \\      
-        \hline
-        \end{tabular}
+        \texttt{\emph{cond1}} & \texttt{count $=$ 0}                                                 \\\hline
+        \texttt{\emph{cond2}} & \texttt{count $=$ 1}                                                 \\\hline
+        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 9 (non ancora calcolato)}                   \\\hline
+        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} $\wedge$ \emph{!cond2} $\wedge$ \emph{!cond3}} \\\hline
+        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0}                                 \\\hline
+        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}                    \\\hline
+    \end{tabular}
 \end{table}
+
 \pagebreak
 
 %immagine FSM
-\begin{figure}[ht] 
-    \centering 
-    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm,
-        semithick, initial text=$ $, initial where= above]
-
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=3cm, semithick, initial text=$ $, initial where= above]
         \node[state, initial]           (0) {\texttt{WT\_RST}};
         \node[state, below of=0]        (1) {\texttt{WT\_STR}};
         \node[state, right=5cm of 1]    (2) {\texttt{RD\_COL}};
@@ -379,13 +371,12 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
                 (6) edge[bend right, right] node {\texttt{\emph{cond1}}}                                        (2)
                 (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond2}}}               (3)
                 (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond3}}}               (4)
-                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)                
+                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)
                 (7) edge                    node {}                                                             (5)
                 (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
-                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)  
+                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
                 (9) edge[bend left]         node {\texttt{i\_start=0}}                                          (1)
                 (9) edge[loop left]         node {\texttt{i\_start=1}}                                          (9);
-
     \end{tikzpicture}
     \caption{Diagramma della macchina a stati finiti.}
     \label{fig:fsm}
@@ -402,7 +393,9 @@ La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondame
 \begin{itemize}
     \item   \texttt{delta\_value $=$ max $-$ min}\par
             \texttt{delta\_value} rappresenta la differenza tra il pixel più chiaro (valore maggiore, \texttt{max}) e il più scuro (valore minore, \texttt{min}) dell’immagine;
+            
             \pagebreak
+    
     \item   \texttt{shift\_value $=$ (8 $-$ floor\footnotemark($\log_{2} $(delta\_value $+$ 1)))}\par
             \texttt{shift\_value} determina il numero di shift a sinistra da applicare al risultato della differenza tra il pixel considerato nell’iterazione corrente e il pixel di valore minore dell’immagine;
             \footnotetext{La funzione \texttt{floor(x)} svolge l’arrotondamento per difetto del valore x fornitogli come argomento.}
@@ -415,41 +408,41 @@ La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondame
                 \caption{Esempi di valori di \texttt{delta\_value}, \texttt{floor(x)} e \texttt{shift\_level} possibili per la codifica delle immagini in scala di grigi a 256 livelli.}
                 \begin{tabular}{||c|c|c||}
                     \hline
-                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark} & \texttt{shift\_level}\\
+                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark} & \texttt{shift\_level} \\
                     \hline \hline
-                    0       & 0         & 8         \\\hline
-                    1       & 1         & 7         \\\hline
-                    2       & 1         & 7         \\\hline
-                    3       & 2         & 6         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    6       & 2         & 6         \\\hline
-                    7       & 3         & 5         \\\hline
-                    8       & 3         & 5         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    14      & 3         & 5         \\\hline
-                    15      & 4         & 4         \\\hline
-                    16      & 4         & 4         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    29      & 4         & 4         \\\hline
+                    0                     & 0                              & 8                     \\\hline
+                    1                     & 1                              & 7                     \\\hline
+                    2                     & 1                              & 7                     \\\hline
+                    3                     & 2                              & 6                     \\\hline
+                    \vdots                & \vdots                         & \vdots                \\\hline
+                    6                     & 2                              & 6                     \\\hline
+                    7                     & 3                              & 5                     \\\hline
+                    8                     & 3                              & 5                     \\\hline
+                    \vdots                & \vdots                         & \vdots                \\\hline
+                    14                    & 3                              & 5                     \\\hline
+                    15                    & 4                              & 4                     \\\hline
+                    16                    & 4                              & 4                     \\\hline
+                    \vdots                & \vdots                         & \vdots                \\\hline
+                    29                    & 4                              & 4                     \\\hline
                 \end{tabular}\hspace{20pt}
                 \begin{tabular}{||c|c|c||}
                     \hline
-                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark[\value{footnote}]} & \texttt{shift\_level}\\
+                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark[\value{footnote}]} & \texttt{shift\_level} \\
                     \hline \hline
-                    30      & 4         & 4         \\\hline
-                    31      & 5         & 3         \\\hline
-                    32      & 5         & 3         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    62      & 5         & 3         \\\hline
-                    63      & 6         & 2         \\\hline
-                    64      & 6         & 2         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    126     & 6         & 2         \\\hline
-                    127     & 7         & 1         \\\hline
-                    128     & 7         & 1         \\\hline
-                    \vdots  & \vdots    & \vdots    \\\hline
-                    254     & 7         & 1         \\\hline
-                    255     & 8         & 0         \\\hline
+                    30                    & 4                                                & 4                     \\\hline
+                    31                    & 5                                                & 3                     \\\hline
+                    32                    & 5                                                & 3                     \\\hline
+                    \vdots                & \vdots                                           & \vdots                \\\hline
+                    62                    & 5                                                & 3                     \\\hline
+                    63                    & 6                                                & 2                     \\\hline
+                    64                    & 6                                                & 2                     \\\hline
+                    \vdots                & \vdots                                           & \vdots                \\\hline
+                    126                   & 6                                                & 2                     \\\hline
+                    127                   & 7                                                & 1                     \\\hline
+                    128                   & 7                                                & 1                     \\\hline
+                    \vdots                & \vdots                                           & \vdots                \\\hline
+                    254                   & 7                                                & 1                     \\\hline
+                    255                   & 8                                                & 0                     \\\hline
                 \end{tabular}
             \end{table}
             \footnotetext{Dove: \texttt{x $=$ $\log_{2} $(delta\_value $+$ 1)}.}
@@ -471,16 +464,16 @@ Iterando quindi sui pixel dell'immagine sorgente:
 \begin{center}
     \small
     \def\arraystretch{1.2} %un po' di padding
-    \begin{tabular}{||c|c|c||} 
+    \begin{tabular}{||c|c|c||}
         \hline
-        \texttt{current\_pixel} & \texttt{temp\_pixel} & \texttt{new\_pixel}\\
+        \texttt{current\_pixel} & \texttt{temp\_pixel} & \texttt{new\_pixel} \\
         \hline \hline
-        52       & 0         & 0         \\\hline
-        55       & 12        & 12        \\\hline
-        122      & 280       & 255       \\\hline
-        70       & 72        & 72        \\\hline
-        \vdots   & \vdots    & \vdots    \\\hline
-    \end{tabular}        
+        52                      & 0                    & 0                   \\\hline
+        55                      & 12                   & 12                  \\\hline
+        122                     & 280                  & 255                 \\\hline
+        70                      & 72                   & 72                  \\\hline
+        \vdots                  & \vdots               & \vdots              \\\hline
+    \end{tabular}
 \end{center}
 \vspace{0,2cm}
 
@@ -488,7 +481,7 @@ Iterando quindi sui pixel dell'immagine sorgente:
 Si è scelto di progettare un componente sensibile al clock su \emph{rising\_edge}.\par
 Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \emph{DSP}\footnotemark.
 Si noti inoltre che l’operazione di moltiplicazione ricorre una sola volta nell’intera elaborazione di ogni singola immagine, e non risulta quindi particolarmente rilevante rispetto all’intero processo. Questo è stato verificato attraverso lo sviluppo simultaneo rispetto alla versione proposta di una ulteriore implementazione che non facesse uso di nessun prodotto all’interno del processo. In quest’ultima non si sono osservati vantaggi significativi in termini di tempo e area di sintesi, a scapito della leggibilità del codice stesso.\par
-Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\par 
+Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\par
 Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt{shift\_value} relativo a un dato \texttt{delta\_value}:
 \footnotetext{DSP (digital signal processor) è un processore dedicato e ottimizzato per eseguire in maniera estremamente efficiente sequenze di istruzioni ricorrenti (come ad esempio somme, moltiplicazioni e traslazioni) nell'elaborazione di segnali digitali.}
 
@@ -564,35 +557,35 @@ Il report di sintesi ha evidenziato l’utilizzo nell’area del modulo sintetiz
     \caption{Risultati della tabella \emph{"utilization"} generata dalla simulazione di \emph{post-synthesis}.}
     \begin{tabular}[width=4cm]{|| l | r | r ||}
         \hline
-        Risorsa & Stima & Utilizzo $\%$\footnotemark  \\ 
+        Risorsa       & Stima        & Utilizzo $\%$\footnotemark \\
         \hline \hline
-        \texttt{LUT}     & \texttt{180} & \texttt{0.44}     \\ \hline
-        \texttt{FF}      & \texttt{81}  & \texttt{0.10}     \\ \hline
-        \texttt{DSP}     & \texttt{1}   & \texttt{0.42}     \\ \hline
-        \texttt{IO}      & \texttt{38}  & \texttt{12.67}    \\ \hline
-        \texttt{BUFG}    & \texttt{1}   & \texttt{3.13}     \\ \hline
+        \texttt{LUT}  & \texttt{180} & \texttt{0.44}              \\ \hline
+        \texttt{FF}   & \texttt{81}  & \texttt{0.10}              \\ \hline
+        \texttt{DSP}  & \texttt{1}   & \texttt{0.42}              \\ \hline
+        \texttt{IO}   & \texttt{38}  & \texttt{12.67}             \\ \hline
+        \texttt{BUFG} & \texttt{1}   & \texttt{3.13}              \\ \hline
     \end{tabular}
 \end{table}
 \footnotetext{Percentuali riferite alla scheda \texttt{FPGA} utilizzata: \texttt{xc7k70tfbv676-1}.}
 \vspace{0,2cm}
 
-Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}, dovuto alla moltiplicazione volutamente mantenuta nel processo. Si noti che il numero dei \texttt{DSP} utilizzati è trascurabile rispetto al numero di DSP generalmente disponibili in una scheda \texttt{FPGA}. 
+Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}, dovuto alla moltiplicazione volutamente mantenuta nel processo. Si noti che il numero dei \texttt{DSP} utilizzati è trascurabile rispetto al numero di DSP generalmente disponibili in una scheda \texttt{FPGA}.
 \vspace{0,2cm}
 
 \subsection{Risultati di simulazione}
 Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con successo le simulazioni richieste dalle specifiche di progetto, di cui si riportano come riferimento di tempi di esecuzione relativi al \emph{TestBench TB\texttt{10K}}:\par
 \def\arraystretch{1.3} %un po' di padding
 \begin{tabular}{m{8cm} m{3cm}}
-    \tabitem Simulazione \emph{behavioral}:                 & \texttt{459410050000ps}  \\  
-    \tabitem Simulazione \emph{post-synthesis functional}:  & \texttt{461409950100ps}  \\  
+    \tabitem Simulazione \emph{behavioral}:                & \texttt{459410050000ps} \\
+    \tabitem Simulazione \emph{post-synthesis functional}: & \texttt{461409950100ps} \\
 \end{tabular}\vspace{0,2cm}
 
 Si è inoltre verificato che il componente progettato supera le seguenti simulazioni non richieste:\par
 \def\arraystretch{1.3} %un po' di padding
 \begin{tabular}{m{8cm}}
-    \tabitem Simulazione \emph{post-synthesis timing}; \\
+    \tabitem Simulazione \emph{post-synthesis timing};          \\
     \tabitem Simulazione \emph{post-implementation functional}; \\
-    \tabitem Simulazione \emph{post-implementation timing}. \\
+    \tabitem Simulazione \emph{post-implementation timing}.     \\
 \end{tabular}\vspace{1cm}
 
 \section{Conclusioni}
