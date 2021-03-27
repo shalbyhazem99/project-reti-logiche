@@ -162,98 +162,94 @@ Infine, l’immagine ottenuta dal processo di equalizzazione svolto dal componen
     \def\arraystretch{1.3} %un po' di padding
     \caption{Schema generale del contenuto della memoria dopo un'elaborazione.}
     \label{tab:schemamem}
-
-    \begin{tabular}{ |m{4cm} | m{5cm} }
+    \begin{tabular}{ |l | l }
         \cline{1-1}
-        \texttt{n\_col}                             & \texttt{addr. 0}                                     \\
-        \cline{1-1}
-        \texttt{n\_row}                             & \texttt{addr. 1}                                     \\
-        \cline{1-1}
-        \texttt{Primo pixel immagine da elaborare}  & \texttt{addr. 2}                                     \\
-        \cline{1-1}
-        \vdots                                      & \vdots                                               \\
-        \cline{1-1}
-        \texttt{Ultimo pixel immagine da elaborare} & \texttt{addr. n\_col $\cdot$ n\_row $+$ 1}           \\
-        \cline{1-1}
-        \texttt{Primo pixel immagine elaborata}     & \texttt{addr. n\_col $\cdot$ n\_row $+$ 2}           \\
-        \cline{1-1}
-        \vdots                                      & \vdots                                               \\
-        \cline{1-1}
-        \texttt{Ultimo pixel immagine elaborata}    & \texttt{addr. 2 $\cdot$ n\_col $\cdot$ n\_row $+$ 1} \\
-        \cline{1-1}
+        \texttt{n\_col}                             & \texttt{addr. 0}                                     \\\cline{1-1}
+        \texttt{n\_row}                             & \texttt{addr. 1}                                     \\\cline{1-1}
+        \texttt{Primo pixel immagine da elaborare}  & \texttt{addr. 2}                                     \\\cline{1-1}
+        \vdots                                      & \vdots                                               \\\cline{1-1}
+        \texttt{Ultimo pixel immagine da elaborare} & \texttt{addr. n\_col $\cdot$ n\_row $+$ 1}           \\\cline{1-1}
+        \texttt{Primo pixel immagine elaborata}     & \texttt{addr. n\_col $\cdot$ n\_row $+$ 2}           \\\cline{1-1}
+        \vdots                                      & \vdots                                               \\\cline{1-1}
+        \texttt{Ultimo pixel immagine elaborata}    & \texttt{addr. 2 $\cdot$ n\_col $\cdot$ n\_row $+$ 1} \\\cline{1-1}
     \end{tabular}
 \end{table}
-\vspace{0.3cm}
-
-\pagebreak
+\vspace{0.2cm}
 
 \subsection{Esempio di funzionamento} %1.4
 \label{sec:esempio}
-Si riporta in seguito un esempio di elaborazione compiuta su un'immagine di test:
+%Si riporta in seguito un esempio di elaborazione compiuta su un'immagine di test:
 
-\begin{figure}[ht]
-    \hspace{-10pt}
-    \begin{minipage}[c]{.35\linewidth}
-        \centering
-        \begin{tabular}{c|c}
-            addr. & data \\
-            \hline \hline
-            0     & 4    \\
-            1     & 4    \\
-            2     & 52   \\
-            3     & 55   \\
-            4     & 122  \\
-            5     & 70   \\
-            6     & 62   \\
-            7     & 59   \\
-            8     & 68   \\
-            9     & 113  \\
-            10    & 85   \\
-            11    & 71   \\
-            12    & 59   \\
-            13    & 64   \\
-            14    & 87   \\
-            15    & 78   \\
-            16    & 68   \\
-        \end{tabular}
-        \begin{tabular}{c|c}
-            addr. & data \\
-            \hline \hline
-            17    & 69   \\
-            18    & 0    \\
-            19    & 12   \\
-            20    & 255  \\
-            21    & 72   \\
-            22    & 40   \\
-            23    & 28   \\
-            24    & 64   \\
-            25    & 244  \\
-            26    & 132  \\
-            27    & 76   \\
-            28    & 28   \\
-            29    & 48   \\
-            30    & 140  \\
-            31    & 104  \\
-            32    & 64   \\
-            33    & 68   \\
-        \end{tabular}
-        \subcaption{Contenuto della memoria}\label{esempio1}
-    \end{minipage}%
+\begin{figure}[h]
+    \centering
     \begin{minipage}[c]{.3\linewidth}
         \centering
-        \includegraphics[scale=0.25]{immSorg.jpg}
-        \subcaption{Immagine sorgente}\label{esempio2}
+        \includegraphics[scale=0.21]{immSorg.jpg}
+        \subcaption{Immagine sorgente}
     \end{minipage}\hspace{20pt}
     \begin{minipage}[c]{.3\linewidth}
         \centering
-        \includegraphics[scale=0.25]{immElab.jpg}
-        \subcaption{Immagine equalizzata}\label{esempio3}
+        \includegraphics[scale=0.21]{immElab.jpg}
+        \subcaption{Immagine equalizzata}
     \end{minipage}
+    \caption{Esempio di trasformazione compiuta dal componente richiesto.}
+    \label{fig:esempioFIG}
 \end{figure}
-\vspace{0.3cm}
 
-È evidente come l'immagine \small (c) \normalsize presenti un contrasto maggiore rispetto alla \small(b)\normalsize.
-Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immagine \small (c)\normalsize, come evidenziato anche dal contenuto della memoria:
+\pagebreak
+
+È evidente come l'immagine \hyperref[fig:esempioFIG]{\small (b)} presenti un contrasto maggiore rispetto alla \hyperref[fig:esempioFIG]{\small (a)}.
+Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immagine \hyperref[fig:esempioFIG]{\small (b)}, come evidenziato anche dal \hyperref[tab:esMEM]{contenuto della memoria}:
+\vspace{0,2cm}
+
+\begin{table}[h]
+    \centering
+    \caption{Contenuto della memoria riferito all'elaborazione dell'immagine d'esempio \hyperref[fig:esempioFIG]{\small (a)}.}
+    \label{tab:esMEM}
+    \begin{tabular}{c|c}
+        addr. & data \\
+        \hline \hline
+        0     & 4    \\
+        1     & 4    \\
+        2     & 52   \\
+        3     & 55   \\
+        4     & 122  \\
+        5     & 70   \\
+        6     & 62   \\
+        7     & 59   \\
+        8     & 68   \\
+        9     & 113  \\
+        10    & 85   \\
+        11    & 71   \\
+        12    & 59   \\
+        13    & 64   \\
+        14    & 87   \\
+        15    & 78   \\
+        16    & 68   \\
+    \end{tabular}\hspace{15pt}
+    \begin{tabular}{c|c}
+        addr. & data \\
+        \hline \hline
+        17    & 69   \\
+        18    & 0    \\
+        19    & 12   \\
+        20    & 255  \\
+        21    & 72   \\
+        22    & 40   \\
+        23    & 28   \\
+        24    & 64   \\
+        25    & 244  \\
+        26    & 132  \\
+        27    & 76   \\
+        28    & 28   \\
+        29    & 48   \\
+        30    & 140  \\
+        31    & 104  \\
+        32    & 64   \\
+        33    & 68   \\
+    \end{tabular}
+\end{table}
+
 \begin{itemize}
     \item Immagine sorgente, addr. 2 - 17: i pixel assumono valori da 52 a 122;
     \item Immagine equalizzata, addr. 18 - 33: i pixel assumono valori da 0 a 255.
@@ -262,7 +258,8 @@ Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immag
 Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione
 l'insieme di passaggi che permettono la trasformazione dell'immagine riportata nell'esempio, che verranno ripresi in seguito. \par
 Si rende disponibile un \emph{TestBench} che replica l'elaborazione dell'immagine d'esempio a questo \href{https://polimi365-my.sharepoint.com/:f:/g/personal/10628782_polimi_it/EgwOb4V2Oj5Cnx3qEVuZ200BZdZsEs7zgI2Tc3eQFnCPpg?e=h7xHbB}{link}.
-\vspace{1cm}
+
+\pagebreak
 
 \section{Design del componente} %2
 Si è scelto di descrivere un modulo \emph{single-process} tramite architettura \emph{behavioral} (comportamentale) in linguaggio VHDL.
@@ -283,22 +280,20 @@ L’FSM schematizzata è composta da 10 stati, suddivisibili in 4 gruppi princip
 
 \subsubsection{Stati ausiliari} %2.1.1
 Gruppo di stati che realizza: inizio e fine del processo, richiesta di lettura e attesa della memoria.
-
 \begin{itemize}
     \item [i.]      \textbf{\texttt{WT\_RST} - wait reset}: stato di attesa del segnale \texttt{i\_rst};
     \item [ii.]     \textbf{\texttt{WT\_STR} - wait start}: stato di attesa del segnale di \texttt{i\_start}. \\
-                    In qualsiasi momento dell’elaborazione, se il segnale \texttt{i\_rst} è rilevato alto\footnotemark, anche non in corrispondenza di \texttt{i\_clk}, la macchina viene riportata in questo stato, tornando in attesa di un nuovo segnale di inizio elaborazione.\par
-                    Al verificarsi della condizione \texttt{i\_start $=$ 1} vengono inizializzati tutti i valori necessari al processo, prima di passare allo stato successivo. Di particolare importanza per l’algoritmo sviluppato è il segnale \texttt{count} (inizialmente 0), che indica l’indirizzo a cui sarà effettuata l’operazione di read alla successiva richiesta di lettura del componente;
-                    \footnotetext{In caso di reset si è supposto che il segnale \texttt{i\_start} venga riportato basso per il periodo in cui il \texttt{i\_rst} è alto.}
+          In qualsiasi momento dell’elaborazione, se il segnale \texttt{i\_rst} è rilevato alto\footnotemark, anche non in corrispondenza di \texttt{i\_clk}, la macchina viene riportata in questo stato, tornando in attesa di un nuovo segnale di inizio elaborazione.\par
+          Al verificarsi della condizione \texttt{i\_start $=$ 1} vengono inizializzati tutti i valori necessari al processo, prima di passare allo stato successivo. Di particolare importanza per l’algoritmo sviluppato è il segnale \texttt{count} (inizialmente 0), che indica l’indirizzo a cui sarà effettuata l’operazione di read alla successiva richiesta di lettura del componente;
+          \footnotetext{In caso di reset si è supposto che il segnale \texttt{i\_start} venga riportato basso per il periodo in cui il \texttt{i\_rst} è alto.}
     \item [iii.]    \textbf{\texttt{RD\_REQ} - read request}: stato di abilitazione della memoria in lettura. Viene predisposto su \texttt{o\_address} l’indirizzo della RAM che deve essere letto;
     \item [iv.]     \textbf{\texttt{WT\_MEM} - wait memory}: stato di attesa della memoria che permette al valore richiesto in \texttt{RD\_REQ} di essere correttamente riportato sul segnale \texttt{i\_data} al ciclo di clock successivo. \par
-                    È un nodo decisivo per l’FSM: viene costantemente rivisitato nei cicli di lettura dei pixel dell’immagine ed è responsabile del corretto instradamento del processo, grazie a condizioni su \texttt{count} e \texttt{shift\_value}. Si occupa inoltre dell’aggiornamento della variabile \texttt{count} stessa, e quindi della corretta gestione del successivo dato letto in memoria;
+          È un nodo decisivo per l’FSM: viene costantemente rivisitato nei cicli di lettura dei pixel dell’immagine ed è responsabile del corretto instradamento del processo, grazie a condizioni su \texttt{count} e \texttt{shift\_value}. Si occupa inoltre dell’aggiornamento della variabile \texttt{count} stessa, e quindi della corretta gestione del successivo dato letto in memoria;
     \item [v.]      \textbf{\texttt{DONE} - done}: stato in cui \texttt{o\_done} viene posto a \texttt{‘1’} per segnalare la fine dell’elaborazione. A questo punto, si attende un valore di \texttt{i\_start} basso per tornare in \texttt{WT\_STR} e poter cominciare il processo di equalizzazione di una nuova immagine;
 \end{itemize}
 
 \subsubsection{Calcolo dimensioni dell'immagine} %2.1.2
 Gruppo di stati che permette il calcolo della dimensione effettiva dell’immagine da elaborare.
-
 \begin{itemize}
     \item [vi.]     \textbf{\texttt{RD\_COL} - read column}: stato in cui il valore \texttt{n\_col} relativo all’immagine, pronto su \texttt{i\_data}, è salvato su una variabile temporanea per essere utilizzato in seguito;
     \item [vii.]    \textbf{\texttt{RD\_ROW} - read row}: stato in cui \texttt{n\_row}, pronto su \texttt{i\_data}, viene moltiplicato con il valore \texttt{n\_col} salvato precedentemente per calcolare la dimensione effettiva dell’immagine e determinare se essa è adatta (\texttt{n\_col $\cdot$ n\_row $>$ 0}) o meno per il proseguimento dell’esecuzione;
@@ -306,16 +301,14 @@ Gruppo di stati che permette il calcolo della dimensione effettiva dell’immagi
 
 \subsubsection{Ricerca dei valori di massimo e minimo dell'immagine} %2.1.3
 Gruppo di stati che permette di individuare i valori minimo e massimo (\texttt{min} e \texttt{max} nel codice), necessari per l’effettiva elaborazione dell’immagine, tra quelli dei pixel dell’immagine sorgente.\par
-La ricerca è svolta tramite un ciclo sui nodi \texttt{RD\_REQ}, \texttt{WT\_MEM} e \texttt{CMP\_DT} dell’FSM. Come già menzionato precedentemente, è \texttt{WT\_MEM} a occuparsi del corretto aggiornamento della variabile \texttt{count}, e quindi della lettura sequenziale dei pixel durante il ciclo.\par
-
+La ricerca è svolta tramite un ciclo sui nodi \texttt{RD\_REQ}, \texttt{WT\_MEM} e \texttt{CMP\_DT} dell’FSM. Come già menzionato precedentemente, è \texttt{WT\_MEM} a occuparsi del corretto aggiornamento della variabile \texttt{count}, e quindi della lettura sequenziale dei pixel durante il ciclo.
 \begin{itemize}
     \item [viii.]   \textbf{\texttt{CMP\_DT} - compare data}: stato in cui il valore del pixel dell’immagine relativo all’iterazione corrente, pronto sul segnale \texttt{i\_data}, viene confrontato con le variabili contenenti il minimo e massimo stabiliti fino a questa iterazione del ciclo di ricerca, aggiornandole se necessario.\par
-                    Se la condizione di termine della ricerca (\texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}) si verifica, si riporta \texttt{count} pari all’indirizzo del primo pixel dell’immagine sorgente, ovvero \texttt{2}, per poi procedere alla fase di effettiva equalizzazione. Se invece non si è ancora scandagliata l’intera immagine in memoria, si procede nel ciclo al pixel successivo;
+          Se la condizione di termine della ricerca (\texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}) si verifica, si riporta \texttt{count} pari all’indirizzo del primo pixel dell’immagine sorgente, ovvero \texttt{2}, per poi procedere alla fase di effettiva equalizzazione. Se invece non si è ancora scandagliata l’intera immagine in memoria, si procede nel ciclo al pixel successivo;
 \end{itemize}
 
 \subsubsection{Elaborazione dell'immagine} %2.1.4
 Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’immagine da trasformare, tramite specifici valori calcolati in \texttt{PREP\_EL} e un ciclo sui nodi \texttt{RD\_REQ}, \texttt{WT\_MEM} e \texttt{EL\_DATA} della macchina a stati finiti.
-
 \begin{itemize}
     \item   [ix.]   \textbf{\texttt{PREP\_EL} - prepare elaboration}: stato in cui vengono stabiliti, per mezzo dei dati ottenuti negli stati precedenti, il \texttt{delta\_value} e lo \texttt{shift\_level} relativi all’immagine da elaborare, necessari per il proseguimento del processo;
     \item   [x.]    \textbf{\texttt{EL\_DATA} - elaborate data}: stato in cui si svolge l’elaborazione effettiva del pixel dell’immagine relativo all’iterazione corrente. In particolare:
@@ -328,22 +321,6 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
 \end{itemize}
 
 \subsubsection{Diagramma della macchina a stati finiti}
-\begin{table}[h]
-    \centering
-    \caption{Condizioni presenti nel processo, come mostrato in \hyperref[fig:fsm]{Figura 3}.}
-    \begin{tabular}{||c|c||}
-        \hline
-        \texttt{\emph{cond1}} & \texttt{count $=$ 0}                                                 \\\hline
-        \texttt{\emph{cond2}} & \texttt{count $=$ 1}                                                 \\\hline
-        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 9 (non ancora calcolato)}                   \\\hline
-        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} $\wedge$ \emph{!cond2} $\wedge$ \emph{!cond3}} \\\hline
-        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0}                                 \\\hline
-        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}                    \\\hline
-    \end{tabular}
-\end{table}
-
-\pagebreak
-
 %immagine FSM
 \begin{figure}[ht]
     \centering
@@ -360,98 +337,110 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
         \node[state, left of=7]         (9) {\texttt{DONE}};
 
         \draw   (0) edge                    node {\texttt{i\_rst=1}}                                            (1)
-                (1) edge[loop left]         node {\texttt{i\_start=0}}                                          (1)
-                (1) edge                    node [yshift=15pt, xshift=-38pt]{\texttt{i\_start=1}}               (5)
-                (2) edge                    node {}                                                             (5)
-                (3) edge                    node [xshift=-10pt] {\texttt{\emph{cond5}}}                         (5)
-                (3) edge[left]              node [yshift=40pt, xshift=20pt]{\texttt{\emph{!cond5}}}             (9)
-                (4) edge                    node [at start, yshift=8pt, xshift=25pt] {\texttt{\emph{cond6}}}    (5)
-                (4) edge                    node[left] {\texttt{\emph{!cond6}}}                                 (7)
-                (5) edge                    node {}                                                             (6)
-                (6) edge[bend right, right] node {\texttt{\emph{cond1}}}                                        (2)
-                (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond2}}}               (3)
-                (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond3}}}               (4)
-                (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)
-                (7) edge                    node {}                                                             (5)
-                (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
-                (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
-                (9) edge[bend left]         node {\texttt{i\_start=0}}                                          (1)
-                (9) edge[loop left]         node {\texttt{i\_start=1}}                                          (9);
+        (1) edge[loop left]         node {\texttt{i\_start=0}}                                          (1)
+        (1) edge                    node [yshift=15pt, xshift=-38pt]{\texttt{i\_start=1}}               (5)
+        (2) edge                    node {}                                                             (5)
+        (3) edge                    node [xshift=-10pt] {\texttt{\emph{cond5}}}                         (5)
+        (3) edge[left]              node [yshift=40pt, xshift=20pt]{\texttt{\emph{!cond5}}}             (9)
+        (4) edge                    node [at start, yshift=8pt, xshift=25pt] {\texttt{\emph{cond6}}}    (5)
+        (4) edge                    node[left] {\texttt{\emph{!cond6}}}                                 (7)
+        (5) edge                    node {}                                                             (6)
+        (6) edge[bend right, right] node {\texttt{\emph{cond1}}}                                        (2)
+        (6) edge[right]             node [at start, xshift=-43pt] {\texttt{\emph{cond2}}}               (3)
+        (6) edge                    node [at start, xshift=-15pt] {\texttt{\emph{cond3}}}               (4)
+        (6) edge[left]              node {\texttt{\emph{cond4}}}                                        (8)
+        (7) edge                    node {}                                                             (5)
+        (8) edge[bend right]        node[right]  {{\texttt{\emph{cond6}}}}                              (5)
+        (8) edge[bend left=25]      node {{\texttt{\emph{!cond6}}}}                                     (9)
+        (9) edge[bend left]         node {\texttt{i\_start=0}}                                          (1)
+        (9) edge[loop left]         node {\texttt{i\_start=1}}                                          (9);
     \end{tikzpicture}
     \caption{Diagramma della macchina a stati finiti.}
     \label{fig:fsm}
 \end{figure}
 \vspace{0,2cm}
 
-Si ricorda che per ogni stato dell'FSM è presente un arco uscente implicito diretto verso lo stato \texttt{WT\_STR}, che simboleggia la possibilità di interrompere in qualsiasi momento l'elaborazione dell'immagine corrente, tramite un segnale \texttt{i\_rst $=$ 1}.
+Si noti che in \hyperref[fig:fsm]{Figura 3} si sono utilizzate le seguenti abbreviazioni:
+\vspace{-.1cm}
+\begin{center}
+    \def\arraystretch{1.2} %un po' di padding
+    \begin{tabular}{||c|c||}
+        \hline
+        \texttt{\emph{cond1}} & \texttt{count $=$ 0}                                                 \\\hline
+        \texttt{\emph{cond2}} & \texttt{count $=$ 1}                                                 \\\hline
+        \texttt{\emph{cond3}} & \texttt{shift\_level $=$ 9 (non ancora calcolato)}                   \\\hline
+        \texttt{\emph{cond4}} & \texttt{\emph{!cond1} $\wedge$ \emph{!cond2} $\wedge$ \emph{!cond3}} \\\hline
+        \texttt{\emph{cond5}} & \texttt{n\_col $\cdot$ n\_row $>$ 0}                                 \\\hline
+        \texttt{\emph{cond6}} & \texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}                    \\\hline
+    \end{tabular}
+\end{center}
+\vspace{0,2cm}
+
+Da ultimo, si ricorda che per ogni stato dell'FSM è presente un arco uscente implicito diretto verso lo stato \texttt{WT\_STR}, che simboleggia la possibilità di interrompere in qualsiasi momento l'elaborazione dell'immagine corrente, tramite un segnale \texttt{i\_rst $=$ 1}.
 \vspace{0,2cm}
 
 \subsection{Approfondimento sull'equalizzazione dell'immagine} %2.2
 \label{sec:appr}
 La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondamentali. Si noti che le prime due sono valutate una sola volta per ogni immagine nello stato \texttt{PREP\_EL}, mentre le restanti sono determinate ad ogni iterazione del ciclo di elaborazione nello stato \texttt{EL\_DATA}.
-
 \begin{itemize}
     \item   \texttt{delta\_value $=$ max $-$ min}\par
-            \texttt{delta\_value} rappresenta la differenza tra il pixel più chiaro (valore maggiore, \texttt{max}) e il più scuro (valore minore, \texttt{min}) dell’immagine;
-            
-            \pagebreak
-    
+          \texttt{delta\_value} rappresenta la differenza tra il pixel più chiaro (valore maggiore, \texttt{max}) e il più scuro (valore minore, \texttt{min}) dell’immagine;
     \item   \texttt{shift\_value $=$ (8 $-$ floor\footnotemark($\log_{2} $(delta\_value $+$ 1)))}\par
-            \texttt{shift\_value} determina il numero di shift a sinistra da applicare al risultato della differenza tra il pixel considerato nell’iterazione corrente e il pixel di valore minore dell’immagine;
-            \footnotetext{La funzione \texttt{floor(x)} svolge l’arrotondamento per difetto del valore x fornitogli come argomento.}
+          \texttt{shift\_value} determina il numero di shift a sinistra da applicare al risultato della differenza tra il pixel considerato nell’iterazione corrente e il pixel di valore minore dell’immagine;
+          \footnotetext{La funzione \texttt{floor(x)} svolge l’arrotondamento per difetto del valore x fornitogli come argomento.}
 
-            \vspace{0,2cm}
-            \begin{table}[h]
-                \centering
-                \small
-                \def\arraystretch{1.3} %un po' di padding
-                \caption{Esempi di valori di \texttt{delta\_value}, \texttt{floor(x)} e \texttt{shift\_level} possibili per la codifica delle immagini in scala di grigi a 256 livelli.}
-                \begin{tabular}{||c|c|c||}
-                    \hline
-                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark} & \texttt{shift\_level} \\
-                    \hline \hline
-                    0                     & 0                              & 8                     \\\hline
-                    1                     & 1                              & 7                     \\\hline
-                    2                     & 1                              & 7                     \\\hline
-                    3                     & 2                              & 6                     \\\hline
-                    \vdots                & \vdots                         & \vdots                \\\hline
-                    6                     & 2                              & 6                     \\\hline
-                    7                     & 3                              & 5                     \\\hline
-                    8                     & 3                              & 5                     \\\hline
-                    \vdots                & \vdots                         & \vdots                \\\hline
-                    14                    & 3                              & 5                     \\\hline
-                    15                    & 4                              & 4                     \\\hline
-                    16                    & 4                              & 4                     \\\hline
-                    \vdots                & \vdots                         & \vdots                \\\hline
-                    29                    & 4                              & 4                     \\\hline
-                \end{tabular}\hspace{20pt}
-                \begin{tabular}{||c|c|c||}
-                    \hline
-                    \texttt{delta\_value} & \texttt{floor(x)\footnotemark[\value{footnote}]} & \texttt{shift\_level} \\
-                    \hline \hline
-                    30                    & 4                                                & 4                     \\\hline
-                    31                    & 5                                                & 3                     \\\hline
-                    32                    & 5                                                & 3                     \\\hline
-                    \vdots                & \vdots                                           & \vdots                \\\hline
-                    62                    & 5                                                & 3                     \\\hline
-                    63                    & 6                                                & 2                     \\\hline
-                    64                    & 6                                                & 2                     \\\hline
-                    \vdots                & \vdots                                           & \vdots                \\\hline
-                    126                   & 6                                                & 2                     \\\hline
-                    127                   & 7                                                & 1                     \\\hline
-                    128                   & 7                                                & 1                     \\\hline
-                    \vdots                & \vdots                                           & \vdots                \\\hline
-                    254                   & 7                                                & 1                     \\\hline
-                    255                   & 8                                                & 0                     \\\hline
-                \end{tabular}
-            \end{table}
-            \footnotetext{Dove: \texttt{x $=$ $\log_{2} $(delta\_value $+$ 1)}.}
-            \vspace{0,2cm}
+          \vspace{0,2cm}
+          \begin{table}[h]
+              \centering
+              \small
+              \def\arraystretch{1.2} %un po' di padding
+              \caption{Esempi di valori di \texttt{delta\_value}, \texttt{floor(x)} e \texttt{shift\_level} possibili per la codifica delle immagini in scala di grigi a 256 livelli.}
+              \begin{tabular}{||c|c|c||}
+                  \hline
+                  \texttt{delta\_value} & \texttt{floor(x)\footnotemark} & \texttt{shift\_level} \\
+                  \hline \hline
+                  0                     & 0                              & 8                     \\\hline
+                  1                     & 1                              & 7                     \\\hline
+                  2                     & 1                              & 7                     \\\hline
+                  3                     & 2                              & 6                     \\\hline
+                  \vdots                & \vdots                         & \vdots                \\\hline
+                  6                     & 2                              & 6                     \\\hline
+                  7                     & 3                              & 5                     \\\hline
+                  8                     & 3                              & 5                     \\\hline
+                  \vdots                & \vdots                         & \vdots                \\\hline
+                  14                    & 3                              & 5                     \\\hline
+                  15                    & 4                              & 4                     \\\hline
+                  16                    & 4                              & 4                     \\\hline
+                  \vdots                & \vdots                         & \vdots                \\\hline
+                  29                    & 4                              & 4                     \\\hline
+              \end{tabular}\hspace{20pt}
+              \begin{tabular}{||c|c|c||}
+                  \hline
+                  \texttt{delta\_value} & \texttt{floor(x)\footnotemark[\value{footnote}]} & \texttt{shift\_level} \\
+                  \hline \hline
+                  30                    & 4                                                & 4                     \\\hline
+                  31                    & 5                                                & 3                     \\\hline
+                  32                    & 5                                                & 3                     \\\hline
+                  \vdots                & \vdots                                           & \vdots                \\\hline
+                  62                    & 5                                                & 3                     \\\hline
+                  63                    & 6                                                & 2                     \\\hline
+                  64                    & 6                                                & 2                     \\\hline
+                  \vdots                & \vdots                                           & \vdots                \\\hline
+                  126                   & 6                                                & 2                     \\\hline
+                  127                   & 7                                                & 1                     \\\hline
+                  128                   & 7                                                & 1                     \\\hline
+                  \vdots                & \vdots                                           & \vdots                \\\hline
+                  254                   & 7                                                & 1                     \\\hline
+                  255                   & 8                                                & 0                     \\\hline
+              \end{tabular}
+          \end{table}
+          \footnotetext{Dove: \texttt{x $=$ $\log_{2} $(delta\_value $+$ 1)}.}
+          \vspace{0,2cm}
 
     \item   \texttt{temp\_pixel $=$ (current\_pixel $-$ min) $\ll$ shift\_level}\par
-            \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di 255 imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”};
+          \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di 255 imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”};
     \item   \texttt{new\_pixel $=$ min(255, temp\_pixel)}\par
-            \texttt{new\_pixel} è pari al minimo tra \texttt{255} e \texttt{temp\_pixel} e rappresenta l’effettivo valore che verrà scritto sulla RAM per il pixel considerato in questa iterazione.
+          \texttt{new\_pixel} è pari al minimo tra \texttt{255} e \texttt{temp\_pixel} e rappresenta l’effettivo valore che verrà scritto sulla RAM per il pixel considerato in questa iterazione.
 \end{itemize}
 
 Riprendendo quindi l'esempio proposto nella \hyperref[sec:esempio]{Sezione 1.4}:
@@ -461,6 +450,7 @@ Riprendendo quindi l'esempio proposto nella \hyperref[sec:esempio]{Sezione 1.4}:
 \end{itemize}
 
 Iterando quindi sui pixel dell'immagine sorgente:
+\vspace{-.1cm}
 \begin{center}
     \small
     \def\arraystretch{1.2} %un po' di padding
@@ -475,21 +465,21 @@ Iterando quindi sui pixel dell'immagine sorgente:
         \vdots                  & \vdots               & \vdots              \\\hline
     \end{tabular}
 \end{center}
-\vspace{0,2cm}
+\vspace{.1cm}
 
 \subsection{Scelte progettuali e ottimizzazioni} %2.3
 Si è scelto di progettare un componente sensibile al clock su \emph{rising\_edge}.\par
-Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \emph{DSP}\footnotemark.
+Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \texttt{DSP}\footnotemark.
 Si noti inoltre che l’operazione di moltiplicazione ricorre una sola volta nell’intera elaborazione di ogni singola immagine, e non risulta quindi particolarmente rilevante rispetto all’intero processo. Questo è stato verificato attraverso lo sviluppo simultaneo rispetto alla versione proposta di una ulteriore implementazione che non facesse uso di nessun prodotto all’interno del processo. In quest’ultima non si sono osservati vantaggi significativi in termini di tempo e area di sintesi, a scapito della leggibilità del codice stesso.\par
-Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\par
+Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\\
 Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt{shift\_value} relativo a un dato \texttt{delta\_value}:
-\footnotetext{DSP (digital signal processor) è un processore dedicato e ottimizzato per eseguire in maniera estremamente efficiente sequenze di istruzioni ricorrenti (come ad esempio somme, moltiplicazioni e traslazioni) nell'elaborazione di segnali digitali.}
+\footnotetext{\texttt{DSP} (digital signal processor) è un processore dedicato e ottimizzato per eseguire in maniera estremamente efficiente sequenze di istruzioni ricorrenti (come ad esempio somme, moltiplicazioni e traslazioni) nell'elaborazione di segnali digitali.}
+\vspace{-.15cm}
 
 \begin{minted}{VHDL}
     -- pongo delta_value in temp_integer
     temp_integer := TO_INTEGER(unsigned (max)) - TO_INTEGER(unsigned (min)); 
-    -- calcolo shift_level
-    IF temp_integer = 0 THEN
+    IF temp_integer = 0 THEN -- switch case per determinare shift_level
         shift_level <= 8;
     ELSIF temp_integer > 0 AND temp_integer < 3 THEN
         shift_level <= 7;
@@ -509,7 +499,6 @@ Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt
         shift_level <= 0;
     END IF;
 \end{minted}
-\vspace{1cm}
 
 \section{Testing e risultati sperimentali} %3
 \subsection{Casi di test} %3.1
@@ -518,7 +507,7 @@ Il corretto funzionamento del componente sviluppato è stato verificato tramite 
 \begin{itemize}
     \item   Corretto calcolo e utilizzo di tutti i possibili \texttt{shift\_value};
     \item   Condizione particolare: \texttt{n\_col $\cdot$ n\_row $=$ 0}\footnotemark ;
-            \footnotetext{\texttt{n\_col $=$ 0 $\vee$ n\_row $=$ 0.}}
+          \footnotetext{\texttt{n\_col $=$ 0 $\vee$ n\_row $=$ 0.}}
     \item   Casi limite di dimensione dell’immagine: \texttt{1x1} e \texttt{128x128} pixel;
     \item   Caso di reset dell’elaborazione;
     \item   Caso di reset dell’elaborazione seguito da un cambio di immagine in memoria;
@@ -531,7 +520,7 @@ Al fine di verificare la correttezza degli ultimi 3 punti in elenco, si è rivel
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.9]{segnaliSignificativi.jpg}
-    \caption{Analisi dei segnali \texttt{i\_start}, \texttt{i\_rst} e \texttt{o\_done} nell'elaborazione di 4 immagini sequenziali.}
+    \caption{Analisi dei segnali \texttt{i\_start}, \texttt{i\_rst} e \texttt{o\_done} nell'elaborazione di 4 immagini consecutive.}
 \end{figure}
 \vspace{0,2cm}
 
@@ -569,7 +558,7 @@ Il report di sintesi ha evidenziato l’utilizzo nell’area del modulo sintetiz
 \footnotetext{Percentuali riferite alla scheda \texttt{FPGA} utilizzata: \texttt{xc7k70tfbv676-1}.}
 \vspace{0,2cm}
 
-Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}, dovuto alla moltiplicazione volutamente mantenuta nel processo. Si noti che il numero dei \texttt{DSP} utilizzati è trascurabile rispetto al numero di DSP generalmente disponibili in una scheda \texttt{FPGA}.
+Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}, dovuto alla moltiplicazione volutamente mantenuta nel processo. Si noti che il numero dei \texttt{DSP} utilizzati è trascurabile rispetto al numero di \texttt{DSP} generalmente disponibili in una scheda \texttt{FPGA}.
 \vspace{0,2cm}
 
 \subsection{Risultati di simulazione}
