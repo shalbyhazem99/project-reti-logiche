@@ -76,7 +76,7 @@
 \subsection{Descrizione del problema} %1.1
 Si vuole realizzare un componente in grado di svolgere una versione semplificata del processo di equalizzazione dell’istogramma di un’immagine, ossia di ricalibrare il contrasto di quest’ultima,
 effettuando una ridistribuzione dei valori di intensità pixel per pixel. \par
-Le immagini di cui è richiesta la manipolazione sono definite in scala di grigi a 256 livelli e hanno una dimensione massima di 128x128 pixel.
+Le immagini di cui è richiesta la manipolazione sono definite in scala di grigi a 256 livelli e hanno una dimensione massima di \texttt{128x128} pixel.
 \vspace{0,2cm} %un po' di spazio
 
 \subsection{Interfaccia del componente} %1.2
@@ -108,7 +108,7 @@ In particolare:
     \item   \texttt{o\_address} è il segnale (vettore) di uscita che manda l’indirizzo alla memoria;
     \item   \texttt{o\_done} è il segnale di uscita che comunica la fine dell’elaborazione e il dato di uscita scritto in memoria;
     \item   \texttt{o\_en} è il segnale di ENABLE da mandare alla memoria per poter comunicare (sia in lettura che in scrittura);
-    \item   \texttt{o\_we} è il segnale di WRITE ENABLE da mandare alla memoria per comunicare quale operazione si vuole svolgere su di essa. Può assumere valori 0 e 1, rispettivamente per lettura e scrittura;
+    \item   \texttt{o\_we} è il segnale di WRITE ENABLE da mandare alla memoria per comunicare quale operazione si vuole svolgere su di essa. Può assumere valori \texttt{0} e \texttt{1}, rispettivamente per lettura e scrittura;
     \item   \texttt{o\_data} è il segnale (vettore) di uscita dal componente verso la memoria.
 \end{itemize}
 
@@ -251,8 +251,8 @@ Questo è dato dall'ampliamento del range di valori assunti dai pixel dell'immag
 \end{table}
 
 \begin{itemize}
-    \item Immagine sorgente, addr. 2 - 17: i pixel assumono valori da 52 a 122;
-    \item Immagine equalizzata, addr. 18 - 33: i pixel assumono valori da 0 a 255.
+    \item Immagine sorgente, \texttt{addr.} \texttt{2} - \texttt{17}: i pixel assumono valori da \texttt{52} a \texttt{122};
+    \item Immagine equalizzata, \texttt{addr.} \texttt{18} - \texttt{33}: i pixel assumono valori da \texttt{0} a \texttt{255}.
 \end{itemize}
 
 Non avendo ancora affrontato appieno il processo svolto dal componente, si ritiene opportuno non approfondire in questa sezione
@@ -284,7 +284,7 @@ Gruppo di stati che realizza: inizio e fine del processo, richiesta di lettura e
     \item [i.]      \textbf{\texttt{WT\_RST} - wait reset}: stato di attesa del segnale \texttt{i\_rst};
     \item [ii.]     \textbf{\texttt{WT\_STR} - wait start}: stato di attesa del segnale di \texttt{i\_start}. \\
           In qualsiasi momento dell’elaborazione, se il segnale \texttt{i\_rst} è rilevato alto\footnotemark, anche non in corrispondenza di \texttt{i\_clk}, la macchina viene riportata in questo stato, tornando in attesa di un nuovo segnale di inizio elaborazione.\par
-          Al verificarsi della condizione \texttt{i\_start $=$ 1} vengono inizializzati tutti i valori necessari al processo, prima di passare allo stato successivo. Di particolare importanza per l’algoritmo sviluppato è il segnale \texttt{count} (inizialmente 0), che indica l’indirizzo a cui sarà effettuata l’operazione di read alla successiva richiesta di lettura del componente;
+          Al verificarsi della condizione \texttt{i\_start $=$ 1} vengono inizializzati tutti i valori necessari al processo, prima di passare allo stato successivo. Di particolare importanza per l’algoritmo sviluppato è il segnale \texttt{count} (inizialmente \texttt{0}), che indica l’indirizzo a cui sarà effettuata l’operazione di read alla successiva richiesta di lettura del componente;
           \footnotetext{In caso di reset si è supposto che il segnale \texttt{i\_start} venga riportato basso per il periodo in cui il \texttt{i\_rst} è alto.}
     \item [iii.]    \textbf{\texttt{RD\_REQ} - read request}: stato di abilitazione della memoria in lettura. Viene predisposto su \texttt{o\_address} l’indirizzo della RAM che deve essere letto;
     \item [iv.]     \textbf{\texttt{WT\_MEM} - wait memory}: stato di attesa della memoria che permette al valore richiesto in \texttt{RD\_REQ} di essere correttamente riportato sul segnale \texttt{i\_data} al ciclo di clock successivo. \par
@@ -438,7 +438,7 @@ La manipolazione del contrasto dell’immagine si fonda su 4 espressioni fondame
           \vspace{0,2cm}
 
     \item   \texttt{temp\_pixel $=$ (current\_pixel $-$ min) $\ll$ shift\_level}\par
-          \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di 255 imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”};
+          \texttt{temp\_pixel} rappresenta il possibile valore da attribuire nell’immagine finale al pixel valutato in questa iterazione del ciclo di elaborazione. Si noti che il suo valore potrebbe superare il limite massimo di \texttt{255} imposto dalla codifica in scala di grigi a 256 livelli. Per questo motivo non può essere utilizzato \emph{“as-is”};
     \item   \texttt{new\_pixel $=$ min(255, temp\_pixel)}\par
           \texttt{new\_pixel} è pari al minimo tra \texttt{255} e \texttt{temp\_pixel} e rappresenta l’effettivo valore che verrà scritto sulla RAM per il pixel considerato in questa iterazione.
 \end{itemize}
@@ -471,7 +471,7 @@ Iterando quindi sui pixel dell'immagine sorgente:
 Si è scelto di progettare un componente sensibile al clock su \emph{rising\_edge}.\par
 Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \texttt{DSP}\footnotemark.
 Si noti inoltre che l’operazione di moltiplicazione ricorre una sola volta nell’intera elaborazione di ogni singola immagine, e non risulta quindi particolarmente rilevante rispetto all’intero processo. Questo è stato verificato attraverso lo sviluppo simultaneo rispetto alla versione proposta di una ulteriore implementazione che non facesse uso di nessun prodotto all’interno del processo. In quest’ultima non si sono osservati vantaggi significativi in termini di tempo e area di sintesi, a scapito della leggibilità del codice stesso.\par
-Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra 0 e 8, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\\
+Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra \texttt{0} e \texttt{8}, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\\
 Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt{shift\_value} relativo a un dato \texttt{delta\_value}:
 \footnotetext{\texttt{DSP} (digital signal processor) è un processore dedicato e ottimizzato per eseguire in maniera estremamente efficiente sequenze di istruzioni ricorrenti (come ad esempio somme, moltiplicazioni e traslazioni) nell'elaborazione di segnali digitali.}
 \vspace{-.15cm}
@@ -546,13 +546,13 @@ Il report di sintesi ha evidenziato l’utilizzo nell’area del modulo sintetiz
     \caption{Risultati della tabella \emph{"utilization"} generata dalla simulazione di \emph{post-synthesis}.}
     \begin{tabular}[width=4cm]{|| l | r | r ||}
         \hline
-        Risorsa       & Stima        & Utilizzo $\%$\footnotemark \\
+        Risorsa       & Stima & Utilizzo $\%$\footnotemark \\
         \hline \hline
-        \texttt{LUT}  & \texttt{180} & \texttt{0.44}              \\ \hline
-        \texttt{FF}   & \texttt{81}  & \texttt{0.10}              \\ \hline
-        \texttt{DSP}  & \texttt{1}   & \texttt{0.42}              \\ \hline
-        \texttt{IO}   & \texttt{38}  & \texttt{12.67}             \\ \hline
-        \texttt{BUFG} & \texttt{1}   & \texttt{3.13}              \\ \hline
+        \texttt{LUT}  & 180   & 0.44                       \\ \hline
+        \texttt{FF}   & 81    & 0.10                       \\ \hline
+        \texttt{DSP}  & 1     & 0.42                       \\ \hline
+        \texttt{IO}   & 38    & 12.67                      \\ \hline
+        \texttt{BUFG} & 1     & 3.13                       \\ \hline
     \end{tabular}
 \end{table}
 \footnotetext{Percentuali riferite alla scheda \texttt{FPGA} utilizzata: \texttt{xc7k70tfbv676-1}.}
