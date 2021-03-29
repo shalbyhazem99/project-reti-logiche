@@ -19,12 +19,13 @@ L'[implementazione](https://github.com/shalbyhazem99/project-reti-logiche/blob/m
 Il corretto funzionamento del componente sviluppato è stato verificato tramite [numerosi TestBench](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/test_banch). In particolare, si è scelto di concentrare l’attenzione su diversi casi critici possibili durante l’esecuzione e sul corretto calcolo di tutti i valori utilizzati. Di seguito una breve lista di condizioni e test
 più significativi:
 
-	* Corretto calcolo e utilizzo di tutti i possibili shift value;
-	* Condizione particolare: n col · n row = 0;
-	* Casi limite di dimensione dell’immagine: 1x1 e 128x128 pixel;
-	* Caso di reset dell’elaborazione;
-	* Caso di reset dell’elaborazione seguito da un cambio di immagine in memoria;
-	* Corretto rapporto tra i segnali i rst, i start e o done durante l’esecuzione.
++ Corretto calcolo e utilizzo di tutti i possibili shift value;
++ Condizione particolare: n col · n row = 0;
++ Casi limite di dimensione dell’immagine: 1x1 e 128x128 pixel;
++ Caso di reset dell’elaborazione;
++ Caso di reset dell’elaborazione seguito da un cambio di immagine in memoria;
++ Corretto rapporto tra i segnali i rst, i start e o done durante l’esecuzione.
+
 ## Sviluppatori
 
 [Shalby Hazem](https://github.com/shalbyhazem99)
