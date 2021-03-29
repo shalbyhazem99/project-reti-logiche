@@ -8,7 +8,7 @@ Esempio di trasformazione compiuta dal componente richiesto
 | ------------- | ------------- |
 |  ![immagine (a)](./documentation/esempio/preEqualizzazione.jpg) *immagine (a)* |  ![immagine (b)](./documentation/esempio/postEqualizzazione.jpg) *immagine (b)* |
 
-E evidente come l’immagine (b) presenti un contrasto maggiore rispetto alla (a). Questo è dato dall’ampliamento del range di valori assunti dai pixel dell’immagine (b).
+È evidente come l’immagine (b) presenti un contrasto maggiore rispetto alla (a). Questo è dato dall’ampliamento del range di valori assunti dai pixel dell’immagine (b).
 
 ## Implementazione
 
