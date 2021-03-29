@@ -19,9 +19,10 @@
     linkcolor=black,
     urlcolor=blue
 }
-\usepackage[bottom]{footmisc}   %footnotes fissate a piè pagina
+%\usepackage[bottom]{footmisc}   %footnotes fissate a piè pagina
 \usepackage{booktabs}           %per tabitem in tabular
 \newcommand{\tabitem}{~~\llap{\textbullet}~~}
+\renewcommand*{\thefootnote}{[\arabic{footnote}]}
 
 \begin{document}
 
@@ -292,6 +293,8 @@ Gruppo di stati che realizza: inizio e fine del processo, richiesta di lettura e
     \item [v.]      \textbf{\texttt{DONE} - done}: stato in cui \texttt{o\_done} viene posto a \texttt{‘1’} per segnalare la fine dell’elaborazione. A questo punto, si attende un valore di \texttt{i\_start} basso per tornare in \texttt{WT\_STR} e poter cominciare il processo di equalizzazione di una nuova immagine;
 \end{itemize}
 
+\clearpage
+
 \subsubsection{Calcolo dimensioni dell'immagine} %2.1.2
 Gruppo di stati che permette il calcolo della dimensione effettiva dell’immagine da elaborare.
 \begin{itemize}
@@ -319,6 +322,8 @@ Gruppo di stati che svolge l’effettiva elaborazione, pixel per pixel, dell’i
               \item [c.]  Se la condizione di termine dell’elaborazione dell’immagine (\texttt{count $\leq$ n\_col $\cdot$ n\_row $+$ 2}) si verifica, si passa a \texttt{DONE}, altrimenti si procede con l’equalizzazione del pixel successivo.
           \end{itemize}
 \end{itemize}
+
+\clearpage
 
 \subsubsection{Diagramma della macchina a stati finiti}
 %immagine FSM
@@ -449,6 +454,8 @@ Riprendendo quindi l'esempio proposto nella \hyperref[sec:esempio]{Sezione 1.4}:
     \item   \texttt{shift\_value $=$ (8 $-$ floor($\log_{2} $(delta\_value $+$ 1))) $=$ 8 $-$ floor(6.149) = 2}
 \end{itemize}
 
+\clearpage
+
 Iterando quindi sui pixel dell'immagine sorgente:
 \vspace{-.1cm}
 \begin{center}
@@ -471,8 +478,8 @@ Iterando quindi sui pixel dell'immagine sorgente:
 Si è scelto di progettare un componente sensibile al clock su \emph{rising\_edge}.\par
 Nell’implementazione dell’algoritmo si sottolinea la scelta di mantenere l’operazione di moltiplicazione per il calcolo della dimensione effettiva dell’immagine da processare. Nonostante il prodotto sia un operatore pesante rispetto alla semplice somma o differenza, lavorando su segnali a 8 bit la sintesi è capace di gestirlo in modo efficace tramite l’inserimento di alcuni \texttt{DSP}\footnotemark.
 Si noti inoltre che l’operazione di moltiplicazione ricorre una sola volta nell’intera elaborazione di ogni singola immagine, e non risulta quindi particolarmente rilevante rispetto all’intero processo. Questo è stato verificato attraverso lo sviluppo simultaneo rispetto alla versione proposta di una ulteriore implementazione che non facesse uso di nessun prodotto all’interno del processo. In quest’ultima non si sono osservati vantaggi significativi in termini di tempo e area di sintesi, a scapito della leggibilità del codice stesso.\par
-Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra \texttt{0} e \texttt{8}, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella realtiva formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\\
-Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt{shift\_value} relativo a un dato \texttt{delta\_value}:
+Da ultimo, si noti che \texttt{shift\_level}, assumendo valore intero compreso tra \texttt{0} e \texttt{8}, è facilmente ricavabile tramite controlli di soglia. Questo permette di evitare nel codice l’effettivo sviluppo del logaritmo indicato nella relativa formula matematica, enunciata alla \hyperref[sec:appr]{Sezione 2.2}.\\
+Di seguito, si riporta il blocco IF/ELSE utilizzato per il calcolo dello \texttt{shift\_value} corrispondente a un dato \texttt{delta\_value}:
 \footnotetext{\texttt{DSP} (digital signal processor) è un processore dedicato e ottimizzato per eseguire in maniera estremamente efficiente sequenze di istruzioni ricorrenti (come ad esempio somme, moltiplicazioni e traslazioni) nell'elaborazione di segnali digitali.}
 \vspace{-.15cm}
 
@@ -524,16 +531,17 @@ Al fine di verificare la correttezza degli ultimi 3 punti in elenco, si è rivel
 \end{figure}
 \vspace{0,2cm}
 
-Si sono utilizzati diversi \emph{TestBench} con caratteristiche differenti e dimensioni variabili dalla singola alle \texttt{10000} immagini (\emph{TB\texttt{10K}}), redatti manualmente (da colleghi e da noi) o auto-generati tramite uno script python appositamente creato.
+Si sono utilizzati diversi \emph{TestBench} con caratteristiche differenti e dimensioni variabili dalla singola alle \texttt{10000} immagini (\emph{\texttt{TB10K}}), redatti manualmente (da colleghi e da noi) o auto-generati tramite uno script python appositamente creato.
 \vspace{0,2cm}
 
 \begin{figure}[ht]
     \centering
     \includegraphics[scale=0.8]{2x2.jpg}
-    \caption{Analisi dei segnali di simulazione del \emph{TestBench TB\texttt{2x2}} fornito con la specifica di progetto.}
+    \caption{Analisi dei segnali di simulazione del \emph{TestBench \texttt{TB2x2}} fornito con la specifica di progetto.}
 \end{figure}
 \vspace{0,2cm}
 
+\clearpage
 \pagebreak
 
 \subsection{Risultati sperimentali}
@@ -562,7 +570,7 @@ Come precedentemente accennato, è presente nel componente finale 1 \texttt{DSP}
 \vspace{0,2cm}
 
 \subsection{Risultati di simulazione}
-Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con successo le simulazioni richieste dalle specifiche di progetto, di cui si riportano come riferimento di tempi di esecuzione relativi al \emph{TestBench TB\texttt{10K}}:\par
+Per tutti i casi di test e \emph{TestBench} utilizzati, sono state svolte con successo le simulazioni richieste dalle specifiche di progetto, di cui si riportano come riferimento di tempi di esecuzione relativi al \emph{TestBench \texttt{TB10K}}:\par
 \def\arraystretch{1.3} %un po' di padding
 \begin{tabular}{m{8cm} m{3cm}}
     \tabitem Simulazione \emph{behavioral}:                & \texttt{459410050000ps} \\
@@ -579,5 +587,7 @@ Si è inoltre verificato che il componente progettato supera le seguenti simulaz
 
 \section{Conclusioni}
 Si ritiene che l’architettura rispecchi a pieno le specifiche di progetto assegnateci. Inoltre, si ritiene di aver ampliato le nostre competenze riguardo il processo di progettazione e il funzionamento di un componente dalle caratteristiche simili a quello da noi proposto.
+
+\clearpage
 
 \end{document}
