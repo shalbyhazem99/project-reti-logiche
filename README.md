@@ -6,7 +6,7 @@ Si vuole realizzare un componente in grado di svolgere una versione semplificata
 Esempio di trasformazione compiuta dal componente richiesto
 | PRE           | POST          |
 | ------------- | ------------- |
-|  ![immagine (a)](./documentation/esempio/preEqualizzazione.jpg) *immagine (a)* |  ![immagine (b)](./documentation/esempio/postEqualizzazione.jpg) *immagine (b)* |
+|  ![immagine (a)](./documentation/codiceReport/images/preEqualizzazione.jpg) *immagine (a)* |  ![immagine (b)](./documentation/codiceReport/images/postEqualizzazione.jpg) *immagine (b)* |
 
 È evidente come l’immagine (b) presenti un contrasto maggiore rispetto alla (a). Questo è dato dall’ampliamento del range di valori assunti dai pixel dell’immagine (b).
 
