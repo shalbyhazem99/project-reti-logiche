@@ -3,8 +3,12 @@ Si vuole realizzare un componente come da [specifica](https://github.com/shalbyh
 
 ## Esempio funzionamento
 
-Immagine pre equalizzazione
-![alt text](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/documentation/esempio/preEqualizzazione.jpg)
+Esempio di trasformazione compiuta dal componente richiesto
+| PRE           | POST          |
+| ------------- | ------------- |
+|  ![immagine (a)](./documentation/esempio/preEqualizzazione.jpg) *immagine (a)* |  ![immagine (b)](./documentation/esempio/postEqualizzazione.jpg) *immagine (b)* |
+
+E evidente come l’immagine (b) presenti un contrasto maggiore rispetto alla (a). Questo è dato dall’ampliamento del range di valori assunti dai pixel dell’immagine (b).
 
 ## Implementazione
 
@@ -16,7 +20,7 @@ Il corretto funzionamento del componente sviluppato è stato verificato tramite 
 più significativi:
 
 	* Corretto calcolo e utilizzo di tutti i possibili shift value;
-	* Condizione particolare: n col · n row = 0
+	* Condizione particolare: n col · n row = 0;
 	* Casi limite di dimensione dell’immagine: 1x1 e 128x128 pixel;
 	* Caso di reset dell’elaborazione;
 	* Caso di reset dell’elaborazione seguito da un cambio di immagine in memoria;
