@@ -1,5 +1,5 @@
 # Prova Finale di Reti Logiche - a.a. 2020-2021
-Si vuole realizzare un componente come da [specifica](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/specification/PFRL_Specifica.pdf), in grado di svolgere una versione semplificata del processo di equalizzazione dell’istogramma di un’immagine, ossia di ricalibrare il contrasto di quest’ultima, effettuando una ridistribuzione dei valori di intensità pixel per pixel.
+Si vuole realizzare un componente in grado di svolgere una versione semplificata del processo di equalizzazione dell’istogramma di un’immagine, ossia di ricalibrare il contrasto di quest’ultima, effettuando una ridistribuzione dei valori di intensità pixel per pixel, come da [specifica](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/specification/PFRL_Specifica.pdf).
 
 ## Esempio funzionamento
 
@@ -11,8 +11,7 @@ Esempio di trasformazione compiuta dal componente richiesto
 È evidente come l’immagine (b) presenti un contrasto maggiore rispetto alla (a). Questo è dato dall’ampliamento del range di valori assunti dai pixel dell’immagine (b).
 
 ## Implementazione
-
-L'[implementazione](https://github.com/shalbyhazem99/project-reti-logiche/blob/main/project_reti_logiche.vhd) consiste nello sviluppo di una macchina a stati finiti. Oltre all'implementazione consegnata per l'esame è stata presa in considerazione un'altra [versione](https://github.com/shalbyhazem99/project-reti-logiche/blob/main/project_reti_logiche_v2.vhd) come la prima ma senza moltiplicazione. 
+L'[implementazione](https://github.com/shalbyhazem99/project-reti-logiche/blob/main/project_reti_logiche.vhd) consiste nello sviluppo di un algoritmo ad-hoc basato su una macchina a stati finiti. Oltre alla principale, scelta per la consegna, è stata presa in considerazione una [seconda versione](https://github.com/shalbyhazem99/project-reti-logiche/blob/main/project_reti_logiche_v2.vhd) che, a differenza della prima, non presenta nessuna moltiplicazione all'interno del processo. 
 
 ## Casi di test
 
