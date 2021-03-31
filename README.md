@@ -15,7 +15,7 @@ L'[implementazione](https://github.com/shalbyhazem99/project-reti-logiche/blob/m
 
 ## Casi di test
 
-Il corretto funzionamento del componente sviluppato è stato verificato tramite [numerosi TestBench](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/test_banch). In particolare, si è scelto di concentrare l’attenzione su diversi casi critici possibili durante l’esecuzione e sul corretto calcolo di tutti i valori utilizzati. Di seguito una breve lista di condizioni e test
+Il corretto funzionamento del componente sviluppato è stato verificato tramite [numerosi TestBench](https://github.com/shalbyhazem99/project-reti-logiche/tree/main/test_bench). In particolare, si è scelto di concentrare l’attenzione su diversi casi critici possibili durante l’esecuzione e sul corretto calcolo di tutti i valori utilizzati. Di seguito una breve lista di condizioni e test
 più significativi:
 
 + Corretto calcolo e utilizzo di tutti i possibili shift value;
